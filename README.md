@@ -1,5 +1,6 @@
 # minerstat.com Windows Node
 ![Downloads](https://img.shields.io/github/downloads/coinscrow/minerstat-windows/total.svg)
+![Version](https://img.shields.io/github/release/coinscrow/minerstat-windows.svg)
 
 [DOWNLOAD - Latest release](https://github.com/coinscrow/minerstat-windows/releases/latest)
 
