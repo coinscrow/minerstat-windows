@@ -7,7 +7,7 @@ install:
 - msbuild minerstat.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   
 artifacts:
-- path: bin/x86/Debug
+- path: minerstat/bin/x86/Debug
   name: minerstat-windows
 
 deploy:
