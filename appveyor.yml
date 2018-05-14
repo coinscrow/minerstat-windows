@@ -3,6 +3,7 @@ image:
 
 # Install scripts.
 install:
+- nuget restore
 - msbuild minerstat.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   
 artifacts:
