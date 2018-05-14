@@ -96,7 +96,6 @@ namespace minerstat {
                     Message.Add(("[" + hourMinute + "] ") + text + " <br>");
                 }
 
-
    } catch (Exception) {
 
    }

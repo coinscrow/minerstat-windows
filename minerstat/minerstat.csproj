@@ -64,24 +64,29 @@
     <StartupObject>minerstat.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bunifu_UI_v1.52">
-      <HintPath>..\..\Bunifu_UI_v1.52.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetZip">
-      <HintPath>..\..\DotNetZip.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Win32.TaskScheduler">
-      <HintPath>..\..\Microsoft.Win32.TaskScheduler.dll</HintPath>
-    </Reference>
-    <Reference Include="MSIAfterburner.NET">
-      <HintPath>..\..\MSIAfterburner.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Bunifu_UI_v1.52, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Newtonsoft.Json.dll</HintPath>
+      <HintPath>references\Bunifu_UI_v1.52.dll</HintPath>
     </Reference>
-    <Reference Include="OpenHardwareMonitorLib">
-      <HintPath>..\..\OpenHardwareMonitorLib.dll</HintPath>
+    <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\DotNetZip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.5.22.0, Culture=neutral, PublicKeyToken=0d013ddd5178a2ae, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\Microsoft.Win32.TaskScheduler.dll</HintPath>
+    </Reference>
+    <Reference Include="MSIAfterburner.NET, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\MSIAfterburner.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenHardwareMonitorLib, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\OpenHardwareMonitorLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -177,6 +182,12 @@
     </Content>
     <Content Include="logo.ico" />
     <Content Include="logo2.ico" />
+    <Content Include="references\Bunifu_UI_v1.52.dll" />
+    <Content Include="references\DotNetZip.dll" />
+    <Content Include="references\Microsoft.Win32.TaskScheduler.dll" />
+    <Content Include="references\MSIAfterburner.NET.dll" />
+    <Content Include="references\Newtonsoft.Json.dll" />
+    <Content Include="references\OpenHardwareMonitorLib.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
