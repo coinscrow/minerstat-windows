@@ -24,7 +24,6 @@ namespace minerstat
         // The form class needs to be changed according to yours
         private static Form1 _instanceMainForm = null;
         public Form1 form1 = null;
-
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
         [DllImport("user32.dll")]
@@ -76,6 +75,11 @@ namespace minerstat
         public void openURL(string URL)
         {
             System.Diagnostics.Process.Start(URL);
+        }
+
+        public Boolean getSyncStatus()
+        {
+            return Program.SyncStatus;
         }
 
         public void logOut()

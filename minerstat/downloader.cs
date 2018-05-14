@@ -42,6 +42,7 @@ namespace minerstat {
    bool flag = counter % 100 == 0;
    if (flag) {
    Program.NewMessage("DOWNLOAD => " + fileNameReal.ToUpper() + " (" + e.ProgressPercentage + " %  )", "INFO");
+   Program.SyncStatus = false;
    }
 
   }
@@ -65,6 +66,7 @@ namespace minerstat {
                 if (minerType.Equals("main"))
                 {
                     mining.startMiner(true, false);
+                    Program.SyncStatus = true;
 
                     // Start watchDog
                     Program.watchDogs.Start();
@@ -75,6 +77,7 @@ namespace minerstat {
                 } else
                 {
                     mining.startMiner(false, true);
+                    Program.SyncStatus = true;
                 }
                 
                 File.Delete(fileName.ToLower());

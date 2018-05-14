@@ -43,6 +43,7 @@ namespace minerstat {
   // Timers
   public static System.Timers.Timer watchDogs;
   public static System.Timers.Timer syncLoop;
+  public static Boolean SyncStatus;
 
 
   [STAThread]
@@ -71,8 +72,9 @@ namespace minerstat {
    syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (5 min in this case)
    syncLoop.AutoReset = true;
    syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
-    
+
    // RUN UX
+   SyncStatus = false;
    Application.Run(new Form1());
 
 

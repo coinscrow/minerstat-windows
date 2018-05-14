@@ -30,23 +30,28 @@ namespace minerstat
             _instanceMainForm = mainForm;
         }
 
-        public static void killAll()
+        async public static void killAll()
         {
-
-            // STOP TIMERS
-            Program.watchDogs.Stop();
-            Program.syncLoop.Stop();
-
-            if (Process.GetProcessesByName("powershell").Length > 0)
+            for (int i = 0; i < 3; i++)
             {
-                try
+                // STOP TIMERS
+                Program.watchDogs.Stop();
+                Program.syncLoop.Stop();
+
+                if (Process.GetProcessesByName("powershell").Length > 0)
                 {
-                    System.Diagnostics.Process.Start("taskkill", "/F /IM powershell.exe /T");
+                    try
+                    {
+                        System.Diagnostics.Process.Start("taskkill", "/F /IM powershell.exe /T");
+                    }
+                    catch (Exception)
+                    {
+                        Program.NewMessage("Unable to close running miner", "ERROR");
+                    }
                 }
-                catch (Exception)
-                {
-                    Program.NewMessage("Unable to close running miner", "ERROR");
-                }
+
+                await Task.Delay(700);
+
             }
 
         }
@@ -127,6 +132,7 @@ namespace minerstat
 
                     // DOWNLOAD FRESH PACKAGE
                     Downloader.downloadFile(minerDefault.ToLower() + ".zip", minerDefault.ToLower(), "main");
+                    Program.SyncStatus = false;
 
                 }
                 else
@@ -134,6 +140,7 @@ namespace minerstat
                     // Start miner                     
                     Program.NewMessage("NODE => Waiting for the first sync..", "INFO");
 
+                    Program.SyncStatus = true;
                     startMiner(true, false);
 
                     // Start watchDog
@@ -194,12 +201,14 @@ namespace minerstat
                         Downloader.minerVersion = cpuVersion;
 
                         // DOWNLOAD FRESH PACKAGE
+                        Program.SyncStatus = false;
                         Downloader.downloadFile(cpuDefault.ToLower() + ".zip", cpuDefault.ToLower(), "cpu");
 
                     }
                     else
                     {
                         startMiner(false, true);
+                        Program.SyncStatus = true;
                     }
 
                 }
