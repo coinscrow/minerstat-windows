@@ -1,6 +1,6 @@
 ![minerstat logo](https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/logo_full.svg)
 
-# minerstat for ASIC
+# minerstat for Windows
 
 **minerstat for Windows** is mining monitoring and management software for your **AMD** / **NVIDIA** rigs.
 
