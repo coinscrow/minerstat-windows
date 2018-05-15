@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "minerstat", "minerstat\minerstat.csproj", "{B8B879F7-D156-47F4-87D7-2DD610D8F279}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "minerstat-installer", "minerstat-installer\minerstat-installer.vdproj", "{F026EBFA-550F-4B2B-9541-9C7B199E801F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

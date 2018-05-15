@@ -4,6 +4,7 @@ image:
 # Install scripts.
 install:
 - nuget restore
+- ps: .\install-vsix-appveyor.ps1
 - msbuild minerstat.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - cd minerstat/bin/x86
 - xcopy Debug "Debug/resources" /i
@@ -26,10 +27,12 @@ install:
 - attrib -r Debug/asset/*
 - attrib -r Debug/resources/locales/*
 - attrib -r Debug/resources/swiftshader/*
-  
+- cd ../../../
+- msbuild minerstat-installer.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+ 
 artifacts:
-- path: minerstat/bin/x86/Debug
-  name: minerstat-windows
+- path: minerstat-installer/Debug/minerstat-installer.msi
+  name: minerstat-installer.msi
 
 deploy:
 - provider: GitHub

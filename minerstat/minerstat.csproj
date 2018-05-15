@@ -72,6 +72,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DotNetZip.dll</HintPath>
     </Reference>
+    <Reference Include="EyeSoft.Core, Version=3.0.6633.19873, Culture=neutral, PublicKeyToken=f52adcc2e30d4b8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\EyeSoft.Core.3.0.6633.19873\lib\net45\EyeSoft.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EyeSoft.Windows, Version=3.0.6633.19873, Culture=neutral, PublicKeyToken=f52adcc2e30d4b8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\EyeSoft.Windows.3.0.6633.19873\lib\net45\EyeSoft.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.TaskScheduler, Version=2.5.22.0, Culture=neutral, PublicKeyToken=0d013ddd5178a2ae, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\Microsoft.Win32.TaskScheduler.dll</HintPath>
