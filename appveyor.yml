@@ -3,7 +3,7 @@ image:
 
 # Install scripts.
 install:
-- nuget restore
+- nuget restore minerstat.sln
 - ps: .\install-vsix-appveyor.ps1
 - msbuild minerstat.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - cd minerstat/bin/x86
