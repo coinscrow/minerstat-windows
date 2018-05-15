@@ -37,6 +37,8 @@ install:
 artifacts:
 - path: minerstat-installer/Debug/minerstat-installer.msi
   name: minerstat-installer.msi
+- path: minerstat/bin/x86/Debug
+  name: minerstat-portable
 
 deploy:
 - provider: GitHub

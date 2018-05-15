@@ -941,6 +941,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "x86"
@@ -3639,7 +3647,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:minerstat"
         "ProductCode" = "8:{F1E8FCF3-636D-4D1C-B5A0-30D23581C3E8}"
-        "PackageCode" = "8:{8A04BFDE-CF47-4AC6-B3DC-81C040A762EB}"
+        "PackageCode" = "8:{1587D7C9-8FFC-4979-A40D-677AFF8001D7}"
         "UpgradeCode" = "8:{BEE1EA19-51BA-4C5F-96D7-5602BA1982E0}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
