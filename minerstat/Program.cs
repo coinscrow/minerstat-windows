@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -45,9 +47,29 @@ namespace minerstat {
   public static System.Timers.Timer syncLoop;
   public static Boolean SyncStatus;
 
+  // Resources
+  static string lib, browser, locales, res;
 
   [STAThread]
   static void Main() {
+
+   // Assigning file paths to varialbles
+   lib = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\libcef.dll");
+   browser = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\CefSharp.BrowserSubprocess.exe");
+   locales = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\locales\");
+   res = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\");
+
+   var libraryLoader = new CefLibraryHandle(lib);
+   bool isValid = !libraryLoader.IsInvalid;
+   libraryLoader.Dispose();
+
+   var settings = new CefSettings();
+   settings.BrowserSubprocessPath = browser;
+   settings.LocalesDirPath = locales;
+   settings.ResourcesDirPath = res;
+
+   Cef.Initialize(settings);
+
    Application.EnableVisualStyles();
    Application.SetCompatibleTextRenderingDefault(false);
 

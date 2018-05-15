@@ -92,7 +92,7 @@ namespace minerstat
             }
 
             // Initialize cef with the provided settings
-            Cef.Initialize(settings);
+            //Cef.Initialize(settings);
             // Create a browser component
             chromeBrowser = new ChromiumWebBrowser(page);
 
