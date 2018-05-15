@@ -13,6 +13,8 @@ install:
 - rmdir /Q /S "Debug/swiftshader"
 - attrib +r Debug/resources/*
 - attrib +r Debug/asset/*
+- attrib +r Debug/resources/locales/*
+- attrib +r Debug/resources/swiftshader/*
 - del /S /Q *.dll
 - del /S /Q *.pak
 - del /S /Q *.pdb
@@ -22,6 +24,8 @@ install:
 - del /S /Q CefSharp.BrowserSubprocess.exe
 - attrib -r Debug/resources/*
 - attrib -r Debug/asset/*
+- attrib -r Debug/resources/locales/*
+- attrib -r Debug/resources/swiftshader/*
   
 artifacts:
 - path: minerstat/bin/x86/Debug
