@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
@@ -49,7 +50,7 @@ namespace minerstat
             // 
             // bunifuElipse1
             // 
-            this.bunifuElipse1.ElipseRadius = 12;
+            this.bunifuElipse1.ElipseRadius = 0;
             this.bunifuElipse1.TargetControl = this;
             // 
             // bunifuWebClient1
@@ -94,16 +95,6 @@ namespace minerstat
         private Bunifu.Framework.UI.BunifuDragControl bunifuDragControl1;
         private Bunifu.Framework.UI.BunifuElipse bunifuElipse1;
         private Bunifu.Framework.UI.BunifuWebClient bunifuWebClient1;
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x00080000; // This form has to have the WS_EX_LAYERED extended style
-                return cp;
-            }
-        }
 
 
 
