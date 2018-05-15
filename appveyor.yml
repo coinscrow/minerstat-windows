@@ -31,12 +31,8 @@ install:
 - attrib -r Debug/asset/*
 - attrib -r Debug/resources/locales/*
 - attrib -r Debug/resources/swiftshader/*
-- cd ../../../
-- msbuild minerstat-installer.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
- 
+
 artifacts:
-- path: minerstat-installer/Debug/minerstat-installer.msi
-  name: minerstat-installer.msi
 - path: minerstat/bin/x86/Debug
   name: minerstat-portable
 
