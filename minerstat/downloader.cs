@@ -47,7 +47,8 @@ namespace minerstat {
 
   }
 
-  async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e) {
+
+        async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e) {
 
    try {
 
@@ -80,7 +81,7 @@ namespace minerstat {
                     Program.SyncStatus = true;
                 }
                 
-                File.Delete(fileName.ToLower());
+                
 
             } catch (Exception) {
 
@@ -94,16 +95,43 @@ namespace minerstat {
    Program.NewMessage("DOWNLOAD => " + fileNameReal.ToUpper() + " ( COMPLETE )", "INFO");
    Program.NewMessage(fileNameReal.ToUpper() + " => Decompressing", "INFO");
 
+            using (ZipFile zipFile = ZipFile.Read(filename))
+            {
+                zipFile.ExtractProgress +=
+               new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
+                zipFile.ExtractAll(targetdir, ExtractExistingFileAction.OverwriteSilently);
+            }
 
-   using(ZipFile zipFile = ZipFile.Read(filename)) {
-    zipFile.ExtractAll(targetdir);
-   }
-  }
+        }
 
   private static string decompressFile() {
    Decompress(fileName.ToLower(), Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/");
    return "done";
   }
- }
+
+        async static void zip_ExtractProgress(object sender, ExtractProgressEventArgs e)
+        {
+            if (e.TotalBytesToTransfer > 0)
+            {
+                Program.NewMessage("UNZIP => " + Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer) + "%", "");
+
+                if (Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer) == 100)
+                {
+                    try
+                    {
+                        string safe = fileName.ToLower();
+                        await Task.Delay(10000);
+                        File.Delete(safe);
+
+                    } catch (Exception ex)
+                    {
+                        //Program.NewMessage("ERROR" + ex.ToString(), "");
+                    }
+                }
+
+            }
+        }
+
+    }
 
 }
