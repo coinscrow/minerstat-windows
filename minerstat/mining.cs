@@ -56,7 +56,7 @@ namespace minerstat
 
         }
 
-        public static void Start()
+        async public static void Start()
         {
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
@@ -137,6 +137,7 @@ namespace minerstat
                 }
                 else
                 {
+                    await Task.Delay(1500);
                     // Start miner                     
                     Program.NewMessage("NODE => Waiting for the first sync..", "INFO");
 
@@ -207,6 +208,7 @@ namespace minerstat
                     }
                     else
                     {
+                        await Task.Delay(1500);
                         startMiner(false, true);
                         Program.SyncStatus = true;
                     }
