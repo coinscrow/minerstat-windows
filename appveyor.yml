@@ -20,6 +20,8 @@ install:
 - attrib +r Debug/asset/*
 - attrib +r Debug/resources/locales/*
 - attrib +r Debug/resources/swiftshader/*
+- attrib +r Debug/minerstat.exe
+- attrib -r Debug/resources/minerstat.exe
 - del /S /Q *.dll
 - del /S /Q *.pak
 - del /S /Q *.pdb
@@ -32,6 +34,7 @@ install:
 - attrib -r Debug/asset/*
 - attrib -r Debug/resources/locales/*
 - attrib -r Debug/resources/swiftshader/*
+- attrib -r Debug/minerstat.exe
 
 artifacts:
 - path: minerstat/bin/x86/Debug
