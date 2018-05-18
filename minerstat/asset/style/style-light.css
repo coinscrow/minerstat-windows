@@ -197,3 +197,10 @@ body{background:#f8f9fc;text-align:left;font-weight:300;font-size:16px;line-heig
 .empty .row_small a:hover, .empty .row_small a:visited:hover{color:#52cca5;}
 .empty .row_small .links_left a{margin-right:10px;}
 .empty .row_small .links_right a{margin-left:10px;}
+
+@keyframes changeColors{ 0% {background-color: #5767ff;} 50% {background-color: #52cca5;} 100% {background-color: #5767ff;} }
+.empty#update_bar{display:none;}
+.empty#update_bar .progress_content{top:50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);position:relative;}
+.empty#update_bar .progress_content p{text-align:center;font-weight:600;color:#575e71;margin:0 0 20px 0;}
+.empty#update_bar .progress_content .progress_bar{background:#fff;box-shadow:0px 5px 8px rgba(75,78,105,0.2), 0 15px 30px rgba(75, 78, 105, 0.1);width:400px;height:18px;border-radius:10px;margin:0 auto;padding:4px 5px;}
+.empty#update_bar .progress_content .progress_bar #progress{background-color:#5767ff;border-radius:10px;height:10px;animation:changeColors 10s infinite;transition:width 1s ease;}

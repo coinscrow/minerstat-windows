@@ -11,8 +11,7 @@ namespace Launcher
     class Downloader
     {
 
-        private static string fileName;
-        private static string fileNameReal;
+        public static string fileName;
         private static int counter;
         public static string minerVersion;
         private static LauncherForm _instanceMainForm = null;
@@ -26,13 +25,13 @@ namespace Launcher
         internal static bool downloadFile()
         {
             bool retVal = false;
-            fileName = "daemon2.exe";
+            fileName = "update.zip";
             try
             {
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(downloadProgressChanged);
-                    webClient.DownloadFileAsync(new Uri("https://ci.appveyor.com/api/projects/minerstat/minerstat-windows/artifacts/minerstat/bin/x86/Debug/daemon.exe"), "daemon2.exe");
+                    webClient.DownloadFileAsync(new Uri("https://ci.appveyor.com/api/projects/minerstat/minerstat-windows/artifacts/minerstat/bin/x86/minerstat-portable.zip"), "update.zip");
                     webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DoSomethingOnFinish);
 
                 }
@@ -54,86 +53,89 @@ namespace Launcher
             if (flag)
             {
                 //MessageBox.Show(Convert.ToInt32(e.ProgressPercentage).ToString());
-                _instanceMainForm.progressBar.Invoke((MethodInvoker)delegate {
-                    _instanceMainForm.progressBar.Value = e.ProgressPercentage;
-                });
+                
+                    minerstat.mainFrame.progressValue = e.ProgressPercentage;
+          
 
             }
 
         }
 
 
-        private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e)
+        async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e)
         {
 
             try
             {
 
-                if (!Directory.Exists(Directory.GetCurrentDirectory() + "/tmp/"))
+                if (!Directory.Exists(Directory.GetCurrentDirectory() + "/update/"))
                 {
-                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/tmp/");
+                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/update");
                 }
 
-                //Decompress("update.zip", "/tmp");
+                System.IO.DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "/");
 
-                if (dl.Equals(false))
+                try
                 {
-                    dl = true;
-                    LauncherForm.doTask();
-                    // SAVE
-                    File.WriteAllText(@Program.minerstatDir + "/version.txt", minerVersion);
+                    File.Delete("daemon.exe");
+                    Directory.Delete("asset", true);
+                } catch (Exception) { }
+                using (ZipFile zipFile = ZipFile.Read("update.zip"))
+                {
+
+                    foreach (ZipEntry fileName in zipFile)
+                    {
+                        try
+                        {
+                            fileName.Extract(Program.currentDir + "/", ExtractExistingFileAction.DoNotOverwrite);
+                        } catch (Exception) { }
+                    }
+
+                    string safe = fileName.ToLower();
+
+                    if (dl.Equals(false))
+                    {
+                        dl = true;
+                        await Task.Delay(7000);
+                        File.WriteAllText(@Program.minerstatDir + "/version.txt", minerVersion);
+                        LauncherForm.doTask();
+                        await Task.Delay(2000);
+                    }
                 }
+
 
             }
             catch (Exception)
             {
-
-
+                
             }
 
         }
 
-        public static void Decompress(string filename, string targetdir)
+        protected static bool IsFileLocked(FileInfo file)
         {
+            FileStream stream = null;
 
-            using (ZipFile zipFile = ZipFile.Read(filename))
+            try
             {
-                zipFile.ExtractProgress +=
-               new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
-                zipFile.ExtractAll(targetdir, ExtractExistingFileAction.OverwriteSilently);
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
             }
 
-        }
-
-
-        async static void zip_ExtractProgress(object sender, ExtractProgressEventArgs e)
-        {
-            if (e.TotalBytesToTransfer > 0)
-            {
-
-                _instanceMainForm.progressBar.Invoke((MethodInvoker)delegate {
-                    _instanceMainForm.progressBar.Value = Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer);
-                });
-
-                if (Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer) == 100)
-                {
-                    try
-                    {
-                        string safe = fileName.ToLower();
-
-                        
-
-                        await Task.Delay(10000);
-                        File.Delete(safe);                      
-
-                    }
-                    catch (Exception ex)
-                    {
-                        //Program.NewMessage("ERROR" + ex.ToString(), "");
-                    }
-                }
-
-            }
+            //file is not locked
+            return false;
         }
 
     }

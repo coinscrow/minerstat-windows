@@ -32,27 +32,13 @@ namespace Launcher
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LauncherForm));
-            this.progressBar = new Bunifu.Framework.UI.BunifuProgressBar();
             this.SuspendLayout();
-            // 
-            // progressBar
-            // 
-            this.progressBar.BackColor = System.Drawing.Color.Gainsboro;
-            this.progressBar.BorderRadius = 0;
-            this.progressBar.Location = new System.Drawing.Point(0, 377);
-            this.progressBar.MaximumValue = 100;
-            this.progressBar.Name = "progressBar";
-            this.progressBar.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(87)))), ((int)(((byte)(103)))), ((int)(((byte)(255)))));
-            this.progressBar.Size = new System.Drawing.Size(869, 10);
-            this.progressBar.TabIndex = 0;
-            this.progressBar.Value = 0;
             // 
             // LauncherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(865, 385);
-            this.Controls.Add(this.progressBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -69,8 +55,6 @@ namespace Launcher
         }
 
         #endregion
-
-        public Bunifu.Framework.UI.BunifuProgressBar progressBar;
     }
 }
 

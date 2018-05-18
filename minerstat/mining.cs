@@ -327,7 +327,7 @@ namespace minerstat
                 }
 
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
         }
 

@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="en"><head>
+	<title>minerstat - crypto mining monitor & management software</title>
+	<meta name="description" content="Minerstat is number-one tool to monitor and manage your crypto mining operation of any size. Includes auto-profit switching and Watchdog swift system alerting.">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="style/style-light.css"/>
+</head>
+<body>
+    <div class="preloader"></div>
+
+	
+        <div id="frame">
+ 
+			<div class="empty" id="update_bar">
+	<div class="progress_content">
+		<p>Updating minerstat ...</p>
+		<div class="progress_bar">
+			<div id="progress" style="width:0%;"></div>
+		</div>
+	</div>
+</div>
+			
+            <div class="main">
+
+            
+            </div>
+            <script src="jquery.min.js"></script>
+            <script>
+               
+                $(function () {
+				
+                    $("#frame").mousemove(function (event) { doFrame.dragMe(); });
+
+                     //doFrame.showDevTools();                  
+
+                    if (doFrame.netCheck() === true) {
+
+                        doFrame.loaded();
+                        loaded();
+
+                    } else {                                            
+
+                        async function netCheck() {
+                           
+                            if (doFrame.netCheck() === false) {
+                                await setTimeout(netCheck, 2000); 
+                            } else {
+                                doFrame.loaded();
+                                loaded();
+                            }
+
+                        }
+
+                        netCheck();
+                      
+                    }
+
+
+                    function loaded() {
+
+                        $(".preloader").hide();
+                        $('#update_bar').show();
+
+					msDisplay = setInterval(function () {
+
+                        var progressValue = doFrame.getProgress();
+                        $('#progress').css("width", progressValue + "%");
+
+
+                    }, 1000);
+
+                    }
+					
+                });
+            </script>
+        </div>
+</body>
+</html>

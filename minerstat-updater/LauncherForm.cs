@@ -7,14 +7,15 @@ using CefSharp;
 using System.Drawing;
 using CefSharp.WinForms;
 using System.Threading.Tasks;
+using Ionic.Zip;
 
 namespace Launcher
 {
     public partial class LauncherForm : Form
     {
-        private WebClient wc = new WebClient();  
+        private static WebClient wc = new WebClient();
         private string name_of_program = "daemon.exe";
-        private string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
+        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
         public ChromiumWebBrowser chromeBrowser;
         public static string remoteVersion;
         DropShadow ds = new DropShadow();
@@ -24,6 +25,7 @@ namespace Launcher
             InitializeComponent();
             InitializeChromium();
             chromeBrowser.RegisterJsObject("delegate", new Downloader(this));
+            chromeBrowser.RegisterJsObject("doFrame", new minerstat.mainFrame(chromeBrowser, this));
             this.Resize += new EventHandler(Form1_Resize);
             this.LocationChanged += new EventHandler(Form1_Resize);
         }
@@ -57,7 +59,7 @@ namespace Launcher
             // for example, replace page with a direct path instead :
             // String page = @"C:\Users\SDkCarlos\Desktop\afolder\index.html";
 
-            String page = string.Format(@"{0}\asset\index.html", Application.StartupPath);
+            String page = string.Format(@"{0}\asset\update.html", Application.StartupPath);
             //String page = @"C:\Users\SDkCarlos\Desktop\artyom-HOMEPAGE\index.html";
 
             if (!File.Exists(page))
@@ -85,32 +87,47 @@ namespace Launcher
 
         private void LauncherForm_Load(object sender, EventArgs e)
         {
+
+            
+
+
+        }
+
+        async public static void Loaded()
+        {           
+
             if (File.Exists(@Program.minerstatDir + "/version.txt"))
             {
-               
+
                 try
                 {
                     var localVersion = File.ReadAllText(@Program.minerstatDir + "/version.txt");
-                    var remoteVersionQuery = new Program.getData(github_version_file, "POST", "");
-                    remoteVersion = remoteVersionQuery.GetResponse();
+                    wc.DownloadFile(new Uri(github_version_file), "NetVersion.txt");
+                    remoteVersion = File.ReadAllText("NetVersion.txt");
+                    await Task.Delay(200);
+                    File.Delete("NetVersion.txt");
 
                     if (!localVersion.Equals(remoteVersion))
                     {
                         Downloader.minerVersion = remoteVersion;
                         Downloader.dl = false;
                         Downloader.downloadFile();
-                    } else
-                    {
-                        StartApp();
                     }
-                } catch (Exception ex) { Application.Restart(); }
+                    else
+                    {
+                        StartAppStatic();
+                    }
+                }
+                catch (Exception) { Application.Restart(); }
 
-            } else
+            }
+            else
             {
                 Downloader.minerVersion = remoteVersion;
                 Downloader.dl = false;
                 Downloader.downloadFile();
             }
+
         }
    
  
@@ -162,28 +179,15 @@ namespace Launcher
         async public static void doTask()
         {
             try {
-                await Task.Delay(1000);
-                if (File.Exists(@Program.currentDir + "/daemon.exe"))
-                {
-                    File.Delete(@Program.currentDir + "/daemon.exe");
-                }
-                await Task.Delay(2000);
-                // File.Move -> After Special char Windows testing
-                File.Copy(Program.currentDir + "/daemon2.exe", @Program.currentDir + "/daemon.exe");
-                await Task.Delay(2000);
-                if (File.Exists(@Program.currentDir + "/daemon2.exe"))
-                {
-                    File.Delete(@Program.currentDir + "/daemon2.exe");
-                }
-                await Task.Delay(1000);
+                await Task.Delay(500);
+                File.Delete(Downloader.fileName);
+                await Task.Delay(1500);
                 StartAppStatic();
-            } catch (Exception ex) { File.WriteAllText("file.txt",ex.ToString());  //Application.Restart(); 
-            }
+            } catch (Exception) {  }
            
         }
 
-
-  }
+    }
 
     public class DropShadow : Form
     {
