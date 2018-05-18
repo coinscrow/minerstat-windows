@@ -8,6 +8,7 @@ using System.Drawing;
 using CefSharp.WinForms;
 using System.Threading.Tasks;
 using Ionic.Zip;
+using System.Reflection;
 
 namespace Launcher
 {
@@ -88,34 +89,33 @@ namespace Launcher
         private void LauncherForm_Load(object sender, EventArgs e)
         {
 
-            
-
-
         }
 
         async public static void Loaded()
         {           
 
-            if (File.Exists(@Program.minerstatDir + "/version.txt"))
+            if (File.Exists(@Program.currentDir + "/daemon.exe"))
             {
 
                 try
                 {
-                    var localVersion = File.ReadAllText(@Program.minerstatDir + "/version.txt");
+                    var localVersion = AssemblyName.GetAssemblyName("daemon.exe").Version.ToString();
                     wc.DownloadFile(new Uri(github_version_file), "NetVersion.txt");
                     remoteVersion = File.ReadAllText("NetVersion.txt");
+
+                    
                     await Task.Delay(200);
                     File.Delete("NetVersion.txt");
 
-                    if (!localVersion.Equals(remoteVersion))
+                    if (remoteVersion.Trim() == localVersion.Trim())
+                    {
+                        StartAppStatic();
+                    }
+                    else
                     {
                         Downloader.minerVersion = remoteVersion;
                         Downloader.dl = false;
                         Downloader.downloadFile();
-                    }
-                    else
-                    {
-                        StartAppStatic();
                     }
                 }
                 catch (Exception) { Application.Restart(); }
@@ -123,6 +123,7 @@ namespace Launcher
             }
             else
             {
+               
                 Downloader.minerVersion = remoteVersion;
                 Downloader.dl = false;
                 Downloader.downloadFile();
@@ -178,9 +179,7 @@ namespace Launcher
 
         async public static void doTask()
         {
-            try {
-                await Task.Delay(500);
-                File.Delete(Downloader.fileName);
+            try {           
                 await Task.Delay(1500);
                 StartAppStatic();
             } catch (Exception) {  }

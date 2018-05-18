@@ -72,6 +72,15 @@ namespace minerstat
         private void frameLoad(object sender, EventArgs e)
         {
             hardwareMonitor.jsonserver();
+
+            if (File.Exists("update.zip"))
+            {
+                try
+                {
+                    File.Delete("update.zip");
+                } catch (Exception) { }
+            }
+
         }
 
         public void InitializeChromium()

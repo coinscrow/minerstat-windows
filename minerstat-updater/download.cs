@@ -79,7 +79,7 @@ namespace Launcher
                 {
                     File.Delete("daemon.exe");
                     Directory.Delete("asset", true);
-                } catch (Exception) { }
+                } catch (Exception) {  }
                 using (ZipFile zipFile = ZipFile.Read("update.zip"))
                 {
 
@@ -88,19 +88,16 @@ namespace Launcher
                         try
                         {
                             fileName.Extract(Program.currentDir + "/", ExtractExistingFileAction.DoNotOverwrite);
-                        } catch (Exception) { }
+                        } catch (Exception) {  }
                     }
 
-                    string safe = fileName.ToLower();
-
-                    if (dl.Equals(false))
+                    try
                     {
-                        dl = true;
                         await Task.Delay(7000);
-                        File.WriteAllText(@Program.minerstatDir + "/version.txt", minerVersion);
                         LauncherForm.doTask();
                         await Task.Delay(2000);
-                    }
+                    } catch (Exception) {  }
+
                 }
 
 

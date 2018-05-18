@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,11 +21,14 @@ namespace minerstat
         public static string cpuDefault;
         public static string minerType;
         public static string minerOverclock;
-        public static string minerCpu;
+        public static string minerCpu, remoteVersion;
         private static Form1 _instanceMainForm = null;
         private static string filePath;
         private static string cpuConfigFile;
         private static string cpuVersion;
+        private static WebClient wc = new WebClient();
+        private string name_of_program = "minerstat.exe";
+        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
 
         public mining(Form1 mainForm)
         {
@@ -56,8 +61,55 @@ namespace minerstat
 
         }
 
+         public static Boolean CheckforUpdates()
+        {
+                try
+                {
+                    var localVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                    wc.DownloadFile(new Uri(github_version_file), "NetVersion.txt");
+                    remoteVersion = File.ReadAllText("NetVersion.txt");
+                    File.Delete("NetVersion.txt");
+
+                    if (remoteVersion.Trim() == localVersion.Trim())
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception) { return false; }       
+
+        }
+
+        public static void StartUpdate()
+        {
+            if (!File.Exists("minerstat.exe"))
+            {
+                MessageBox.Show("Main program file doesn't exist, try reinstalling or updating app.");
+                Application.Exit();
+            }
+            ProcessStartInfo Info = new ProcessStartInfo();
+            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start minerstat.exe";
+            Info.WindowStyle = ProcessWindowStyle.Hidden;
+            Info.CreateNoWindow = true;
+            Info.FileName = "cmd.exe";
+            Process.Start(Info);
+            Application.Exit();
+        }
+
         async public static void Start()
         {
+
+
+            if (CheckforUpdates().Equals(true))
+            {
+
+                StartUpdate();
+                Application.Exit();
+
+            }
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
                 _instanceMainForm.TopMost = true;
