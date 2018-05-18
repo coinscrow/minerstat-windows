@@ -82,9 +82,6 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>B330BBAD61D060385F75C9FC653E5D5DD56435E4</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
     <ManifestKeyFile>minerstat.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
