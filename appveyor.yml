@@ -29,13 +29,14 @@ install:
 - del /S /Q *.bin
 - del /S /Q *.dat
 - del /S /Q CefSharp.BrowserSubprocess.exe
-- del /S /Q minerstat.exe
+- del /S /Q daemon.exe
 - attrib -r Debug/resources/*
 - attrib -r Debug/asset/*
 - attrib -r Debug/resources/locales/*
 - attrib -r Debug/resources/swiftshader/*
 - attrib -r Debug/daemon.exe
-- copy ../../../minerstat-updater/bin/Debug/minerstat.exe Debug/minerstat.exe
+- cd C:\projects\minerstat-windows\minerstat-updater\bin\Debug
+- copy minerstat.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
 
 artifacts:
 - path: minerstat/bin/x86/Debug
