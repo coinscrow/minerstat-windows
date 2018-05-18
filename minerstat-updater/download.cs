@@ -26,13 +26,13 @@ namespace Launcher
         internal static bool downloadFile()
         {
             bool retVal = false;
-            fileName = "update.zip";
+            fileName = "daemon2.exe";
             try
             {
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(downloadProgressChanged);
-                    webClient.DownloadFileAsync(new Uri("https://ci.appveyor.com/api/projects/minerstat/minerstat-asic/artifacts/release-builds/minerstat-asic-windows.zip"), "update.zip");
+                    webClient.DownloadFileAsync(new Uri("https://ci.appveyor.com/api/projects/minerstat/minerstat-windows/artifacts/minerstat/bin/x86/Debug/daemon.exe"), "daemon2.exe");
                     webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DoSomethingOnFinish);
 
                 }
@@ -74,8 +74,15 @@ namespace Launcher
                     Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/tmp/");
                 }
 
-                Decompress("update.zip", "/tmp");
+                //Decompress("update.zip", "/tmp");
 
+                if (dl.Equals(false))
+                {
+                    dl = true;
+                    LauncherForm.doTask();
+                    // SAVE
+                    File.WriteAllText(@Program.minerstatDir + "/version.txt", minerVersion);
+                }
 
             }
             catch (Exception)
@@ -114,13 +121,7 @@ namespace Launcher
                     {
                         string safe = fileName.ToLower();
 
-                        if (dl.Equals(false))
-                        {
-                            dl = true;
-                            LauncherForm.doTask();
-                            // SAVE
-                            File.WriteAllText(@Program.minerstatDir + "/version.txt", minerVersion);
-                        }
+                        
 
                         await Task.Delay(10000);
                         File.Delete(safe);                      

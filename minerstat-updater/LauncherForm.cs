@@ -162,14 +162,23 @@ namespace Launcher
         async public static void doTask()
         {
             try {
-                if (File.Exists("daemon.exe"))
+                await Task.Delay(1000);
+                if (File.Exists(@Program.currentDir + "/daemon.exe"))
                 {
-                    File.Delete("daemon.exe");
+                    File.Delete(@Program.currentDir + "/daemon.exe");
                 }
                 await Task.Delay(2000);
-                File.Move("/tmp/deamon.exe", "daemon.exe");
+                // File.Move -> After Special char Windows testing
+                File.Copy(Program.currentDir + "/daemon2.exe", @Program.currentDir + "/daemon.exe");
+                await Task.Delay(2000);
+                if (File.Exists(@Program.currentDir + "/daemon2.exe"))
+                {
+                    File.Delete(@Program.currentDir + "/daemon2.exe");
+                }
+                await Task.Delay(1000);
                 StartAppStatic();
-            } catch (Exception ex) { Application.Restart(); }
+            } catch (Exception ex) { File.WriteAllText("file.txt",ex.ToString());  //Application.Restart(); 
+            }
            
         }
 
