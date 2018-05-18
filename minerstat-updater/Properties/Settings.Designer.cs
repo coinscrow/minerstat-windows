@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace daemon.Properties {
+namespace minerstat.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

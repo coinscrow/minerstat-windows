@@ -51,54 +51,61 @@ namespace minerstat {
   static string lib, browser, locales, res;
 
   [STAThread]
-  static void Main() {
+  static void Main(string[] args) {
 
-   // Assigning file paths to varialbles
-   lib = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\libcef.dll");
-   browser = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\CefSharp.BrowserSubprocess.exe");
-   locales = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\locales\");
-   res = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\");
+            if (args.Length == 0)
+            {
+                MessageBox.Show("ERROR => Please, Start with minerstat.exe");
+                Application.Exit();
+            }
+            else {
 
-   var libraryLoader = new CefLibraryHandle(lib);
-   bool isValid = !libraryLoader.IsInvalid;
-   libraryLoader.Dispose();
+                // Assigning file paths to varialbles
+                lib = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\libcef.dll");
+                browser = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\CefSharp.BrowserSubprocess.exe");
+                locales = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\locales\");
+                res = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"resources\");
 
-   var settings = new CefSettings();
-   settings.BrowserSubprocessPath = browser;
-   settings.LocalesDirPath = locales;
-   settings.ResourcesDirPath = res;
+                var libraryLoader = new CefLibraryHandle(lib);
+                bool isValid = !libraryLoader.IsInvalid;
+                libraryLoader.Dispose();
 
-   Cef.Initialize(settings);
+                var settings = new CefSettings();
+                settings.BrowserSubprocessPath = browser;
+                settings.LocalesDirPath = locales;
+                settings.ResourcesDirPath = res;
 
-   Application.EnableVisualStyles();
-   Application.SetCompatibleTextRenderingDefault(false);
+                Cef.Initialize(settings);
 
-   // SET Global Varibles
-   currentDir = System.Environment.CurrentDirectory;
-   tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-   minerstatDir = tempDir + "/minerstat";
-   suffix = "byte";
-   totalTraffic = 0;
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
-   // Open hardware monitor
-   Random random = new Random();
-   monitorport = random.Next(8600, 8700);
+                // SET Global Varibles
+                currentDir = System.Environment.CurrentDirectory;
+                tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                minerstatDir = tempDir + "/minerstat";
+                suffix = "byte";
+                totalTraffic = 0;
 
-   // Initalize Watchdog
-   watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(3).TotalMilliseconds); // set the time (5 min in this case)
-   watchDogs.AutoReset = true;
-   watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
-   watchDogFailover = 0;
+                // Open hardware monitor
+                Random random = new Random();
+                monitorport = random.Next(8600, 8700);
 
-   // Initalize Syncing
-   syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (5 min in this case)
-   syncLoop.AutoReset = true;
-   syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
+                // Initalize Watchdog
+                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(3).TotalMilliseconds); // set the time (5 min in this case)
+                watchDogs.AutoReset = true;
+                watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
+                watchDogFailover = 0;
 
-   // RUN UX
-   SyncStatus = false;
-   Application.Run(new Form1());
+                // Initalize Syncing
+                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (5 min in this case)
+                syncLoop.AutoReset = true;
+                syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
 
+                // RUN UX
+                SyncStatus = false;
+                Application.Run(new Form1());
+                }
 
   }
 

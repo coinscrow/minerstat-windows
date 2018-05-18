@@ -28,10 +28,8 @@ namespace minerstat
         {
 
             try
-            {
-
-           
-
+            {         
+            
                 if (modules.checkNet(false) == false)
                 {
                     Program.NewMessage("SYNC => Skip: CONNECTION LOST", "ERROR");
@@ -108,22 +106,28 @@ namespace minerstat
                                     break;
                             }
 
-                            if (monitorURL.Equals("HTTP"))
+                            try
                             {
+                                if (monitorURL.Equals("HTTP"))
+                                {
 
-                                string input;
-                                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:7887");
-                                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                                StreamReader sr = new StreamReader(response.GetResponseStream());
-                                input = sr.ReadToEnd();
-                                sr.Close();
-                                apiCpu = input;
+                                    string input;
+                                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:7887");
+                                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                                    StreamReader sr = new StreamReader(response.GetResponseStream());
+                                    input = sr.ReadToEnd();
+                                    sr.Close();
+                                    apiCpu = input;
 
-                            } else
+                                }
+                                else
+                                {
+                                    modules.getStat_cpu();
+                                }
+                            } catch (Exception ex)
                             {
-                               modules.getStat_cpu();
+                                Program.NewMessage("ERROR => CPU API NOT RUNNING", "");
                             }
-
 
                         }
 
