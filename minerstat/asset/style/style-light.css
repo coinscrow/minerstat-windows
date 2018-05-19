@@ -185,8 +185,8 @@ body{background:#f8f9fc;text-align:left;font-weight:300;font-size:16px;line-heig
 .empty .box .checkgroup .check{border:1px solid #e2e5ef;border-radius:3px;width:22px;height:22px;margin:0 10px 0 0;cursor:pointer;}
 .empty .box .checkgroup .check.selected{background:url("../images/tick_green.svg") no-repeat center center;background-size:25px 25px;border:2px solid #52cca5;}
 .empty .box .checkgroup label{font-size:14px;margin:0 0 0 0;display:table;font-weight:300;text-align:left;cursor:pointer;}
-.empty .box .checkgroup label a:link, .popup .row .checkgroup label a:visited, .popup .row .checkgroup label a:active{color:#46474f;}
-.empty .box .checkgroup label a:link:hover, .popup .row .checkgroup label a:visited:hover{color:#52cca5;}
+.empty .box .checkgroup label a:link, .empty .box .checkgroup label a:visited, .empty .box .checkgroup label a:active{color:#46474f;}
+.empty .box .checkgroup label a:link:hover, .empty .box .checkgroup label a:visited:hover{color:#52cca5;}
 .empty .box .message_err{color:#ff5b56;font-weight:600;font-size:16px;text-align:center;border-bottom:1px solid #e2e5ef;margin-top:20px;display:none;padding:0 0 10px 0;margin:-10px 0 10px 0;}
 .empty .box .button{border-radius:3px;padding:10px 15px;background-color:#52cca5;color:#fff;font-size:16px;font-weight:600;display:inline-flex;width:auto;align-items:center;margin:0 0 0 auto;cursor:pointer;border:0;transition:all .2s ease;-webkit-font-smoothing: antialiased;}
 .empty .box .button:hover{background-color:#5667ff;color:#fff;}
@@ -195,8 +195,8 @@ body{background:#f8f9fc;text-align:left;font-weight:300;font-size:16px;line-heig
 .empty .row_small{display:flex;flex-direction:row;justify-content:space-between;color:#adadbf;font-size:12px;text-decoration:none;width:360px;margin:15px auto 0 auto;}
 .empty .row_small a:link, .empty .row_small a:visited, .empty .row_small a:active{color:#adadbf;vertical-align:baseline;display:inline-block;text-decoration:none;}
 .empty .row_small a:hover, .empty .row_small a:visited:hover{color:#52cca5;}
-.empty .row_small .links_left a{margin-right:10px;}
-.empty .row_small .links_right a{margin-left:10px;}
+.empty .row_small .links_left a{margin-right:10px;cursor:pointer;}
+.empty .row_small .links_right a{margin-left:10px;cursor:pointer;}
 
 @keyframes changeColors{ 0% {background-color: #5767ff;} 50% {background-color: #52cca5;} 100% {background-color: #5767ff;} }
 .empty#update_bar{display:none;}
