@@ -51,6 +51,10 @@ namespace minerstat {
   // Resources
   static string lib, browser, locales, res;
 
+  // Start on Windows Protection
+  public static int StartDelay;
+  public static Boolean StartDelayOver;
+
   [STAThread]
   static void Main(string[] args) {
 
@@ -88,6 +92,7 @@ namespace minerstat {
                 minerstatDir = tempDir + "/minerstat";
                 suffix = "byte";
                 totalTraffic = 0;
+                StartDelayOver = true;
 
                 // Open hardware monitor
                 Random random = new Random();
@@ -117,8 +122,15 @@ namespace minerstat {
 
                             Directory.Delete(currentDir + "/update/", true);
 
-                        } catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+                        } catch (Exception ex) {  }
                     }
+                }
+
+                // Start on Windows Double miner start Protection
+                if (args.Contains("startWithWindows"))
+                {
+                    StartDelayOver = false;
+                    StartDelay = 8000;
                 }
 
                 // RUN UX

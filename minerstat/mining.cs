@@ -13,7 +13,6 @@ namespace minerstat
 {
     class mining
     {
-
         public static string configJSON;
         public static string minerConfig;
         public static string cpuConfig;
@@ -27,7 +26,6 @@ namespace minerstat
         private static string cpuConfigFile;
         private static string cpuVersion;
         private static WebClient wc = new WebClient();
-        private string name_of_program = "minerstat.exe";
         private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
 
         public mining(Form1 mainForm)
@@ -80,7 +78,6 @@ namespace minerstat
                     }
                 }
                 catch (Exception) { return false; }       
-
         }
 
         public static void StartUpdate()
@@ -102,13 +99,20 @@ namespace minerstat
         async public static void Start()
         {
 
+            if (Program.StartDelayOver.Equals(false))
+            {
+                Program.SyncStatus = false;
+                Program.NewMessage("INFO => STARTED WITH WINDOWS","INFO");
+                Program.NewMessage("INFO => Programmed mining start delay: " + Program.StartDelay + "ms", "INFO");
+                await Task.Delay(Program.StartDelay);
+                Program.StartDelayOver = true;
+                Program.SyncStatus = true;
+            }
 
             if (CheckforUpdates().Equals(true))
             {
-
                 StartUpdate();
                 Application.Exit();
-
             }
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
@@ -273,7 +277,6 @@ namespace minerstat
 
             }
 
-
             if (m1.Equals(true))
             {
                 string folderPath = Program.currentDir + "/clients/" + minerDefault.ToLower() + "/";
@@ -315,7 +318,6 @@ namespace minerstat
         {
             try
             {
-
                 modules.getData nodeConfig = new modules.getData("https://api.minerstat.com/v2/node/gpu/" + token + "/" + worker, "POST", "");
                 configJSON = nodeConfig.GetResponse();
 
