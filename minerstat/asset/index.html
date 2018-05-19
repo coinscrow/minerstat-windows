@@ -140,8 +140,18 @@
 
                     $("#frame").mousemove(function (event) { doFrame.dragMe(); });
 
-                     //doFrame.showDevTools();                  
+                    var autologin = false;
 
+                    // SHOW DEVELOPER TOOLS
+                    //doFrame.showDevTools();  
+
+                    // START WITH WINDOWS
+                    var isTask = doFrame.getTask();
+                    if (isTask == true) {
+                        $('.checkgroup').children('.check').toggleClass('selected');
+                    } 
+
+                    // CHECK CONNECTION BEFORE START
                     if (doFrame.netCheck() === true) {
                         doFrame.newMessage("NODE => Connecton: OK!", "INFO");
 
@@ -171,7 +181,7 @@
                       
                     }
 
-
+                    // CONNECTION => OK (START)
                     function loaded() {
 
                     var login = doFrame.getUser();
@@ -184,6 +194,7 @@
                         var loginToken = obj["token"];
                         var loginWorker = obj["worker"];
 
+                        var autologin = true;
                         loginNow();
 
                         async function loginNow() {
@@ -203,9 +214,19 @@
 
                     } else {
                         $(".preloader").hide();
-                    }
+                        autologin = false;
+                        }
 
 
+                        var startOnWindows = 0;
+
+                        // Checkbox
+                        $('.checkgroup').click(function () {
+                            $(this).children('.check').toggleClass('selected');
+                            startOnWindows = Math.abs(startOnWindows - 1);
+                        });
+
+                    // REFRESH MINERSTAT CONSOLE every 1 SEC
                     msDisplay = setInterval(function () {
 
                         var display = doFrame.getDisplay();
@@ -231,15 +252,7 @@
 
                     }, 1000);
 
-               
-                    var startOnWindows = 0;
-                    // Checkbox
-                    $('.checkgroup').click(function () {
-                        $(this).children('.check').toggleClass('selected');
-                        startOnWindows = Math.abs(startOnWindows - 1);
-                    });
-
-                                    
+                                 
                     // Click on Save & Login button
                         $('#loginButton').on('click', function () {
                             var $this = $(this);
@@ -269,9 +282,20 @@
                                             $('.message_err').html(data.error).show();
                                         } else { // Success
                                             doFrame.setUser(token, worker);
+
+                                            // START WITH WINDOWS ??
+                                            if (autologin == false) {
+                                                if (startOnWindows == 1) {
+                                                    doFrame.setTask();
+                                                } else {
+                                                    doFrame.removeTask();
+                                                }
+                                            }
+
                                             workerData = data["" + worker.toUpperCase() + ""];
                                             $('.circle-loader').addClass('load-complete');
                                             $('.checkmark').show();
+                                            doFrame.setSyncStatus(true);
                                             setTimeout(() => {
 
                                                // if (data.includes("online")) {

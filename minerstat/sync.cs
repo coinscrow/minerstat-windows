@@ -127,6 +127,7 @@ namespace minerstat
                             } catch (Exception ex)
                             {
                                 Program.NewMessage("ERROR => CPU API NOT RUNNING", "");
+                                watchDog.cpuHealth();
                             }
 
                         }

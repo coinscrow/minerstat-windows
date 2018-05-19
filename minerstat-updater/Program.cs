@@ -24,7 +24,8 @@ namespace Launcher
         static void Main()
         {
             // Directories
-            currentDir = System.Environment.CurrentDirectory;
+            //currentDir = System.Environment.CurrentDirectory;
+            currentDir = AppDomain.CurrentDomain.BaseDirectory;
             tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             minerstatDir = tempDir + "/minerstat";
 

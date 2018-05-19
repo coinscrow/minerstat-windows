@@ -15,6 +15,7 @@ namespace minerstat {
   public static int totalTraffic;
   public static string suffix;
   public static int watchDogFailover;
+  public static int watchDogFailoverCpu;
 
   // Open hardware monitor
   public static int monitorport;
@@ -81,7 +82,8 @@ namespace minerstat {
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 // SET Global Varibles
-                currentDir = System.Environment.CurrentDirectory;
+                //currentDir = System.Environment.CurrentDirectory;
+                currentDir = AppDomain.CurrentDomain.BaseDirectory;
                 tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 minerstatDir = tempDir + "/minerstat";
                 suffix = "byte";
@@ -101,6 +103,23 @@ namespace minerstat {
                 syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (5 min in this case)
                 syncLoop.AutoReset = true;
                 syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
+
+                // Check update folder
+                if (Directory.Exists(currentDir + "/update/"))
+                {
+                    if (File.Exists(currentDir + "/update/minerstat.exe"))
+                    {
+                        try
+                        {
+
+                            File.Delete("minerstat.exe");
+                            File.Copy("update/minerstat.exe", "minerstat.exe");
+
+                            Directory.Delete(currentDir + "/update/", true);
+
+                        } catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+                    }
+                }
 
                 // RUN UX
                 SyncStatus = false;

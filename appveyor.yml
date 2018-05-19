@@ -41,8 +41,6 @@ install:
 artifacts:
 - path: minerstat/bin/x86/Debug
   name: minerstat-portable
-- path: minerstat/bin/x86/Debug/daemon.exe
-  name: only-exe-for-updater
 
 deploy:
 - provider: GitHub

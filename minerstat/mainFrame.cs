@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
+using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json;
 
 namespace minerstat
@@ -57,6 +59,73 @@ namespace minerstat
             _instanceBrowser.ShowDevTools();
         }
 
+        public void setTask() {
+            try
+            {
+                TaskService.Instance.AddTask("minerstat-windows", QuickTriggerType.Boot, Program.currentDir + "/minerstat.exe", "-verify windowsSystemStartup");
+
+
+                using (TaskService ts = new TaskService())
+                {
+                    // Get the company name 
+                    FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location);
+                    string companyName = versionInfo.CompanyName;
+
+                    // Set the program path
+                    string folderPath = Program.currentDir;
+                    string programPath = string.Format(@"{0}\daemon.exe", folderPath);
+
+                    // Create a new task definition and assign properties
+                    TaskDefinition td = ts.NewTask();
+                    td.RegistrationInfo.Description = "Manage your mining operation of any size from anywhere";
+
+                    // Set trigger and action and other properties...
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+
+                    // Create a trigger that will fire at the end of the month, every month
+                    td.Triggers.Add(new LogonTrigger {});
+
+                    // Create an action that will launch the program whenever the trigger fires
+                    td.Actions.Add(new ExecAction(programPath, "-verify startWithWindows", null));                  
+
+                    ts.RootFolder.RegisterTaskDefinition("minerstat-windows", td);
+
+                }
+
+
+            }
+            catch (Exception) { }
+        }
+
+        public void removeTask() {
+            try
+            {
+                using (TaskService ts = new TaskService())
+                {
+                    if (ts.GetTask("minerstat-windows") != null)
+                    {
+                        ts.RootFolder.DeleteTask("minerstat-windows");
+                    }
+                }
+            }
+            catch (Exception) { }
+        }
+
+        public Boolean getTask()
+        {          
+            try
+            {
+                if (TaskService.Instance.GetTask("minerstat-windows").ToString().Contains("minerstat-windows")) {
+                return true;
+            } else
+            {
+                return false;
+            }
+            }
+            catch (Exception) { return false; }
+
+        }
+
         public void closeApp()
         {
             mining.killAll();
@@ -82,8 +151,17 @@ namespace minerstat
             return Program.SyncStatus;
         }
 
+        public Boolean setSyncStatus(Boolean val)
+        {
+            Program.SyncStatus = val;
+            return Program.SyncStatus;
+        }
+
         public void logOut()
         {
+
+            removeTask();
+       
             if (File.Exists(Program.minerstatDir + "/user.json"))
             {
                 File.Delete((Program.minerstatDir + "/user.json"));
@@ -93,7 +171,7 @@ namespace minerstat
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
-
+           
             Application.Restart();
 
         }

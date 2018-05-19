@@ -48,7 +48,7 @@ namespace Launcher
             this.Name = "LauncherForm";
             this.Opacity = 0.99D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "minerstat for Windows";
+            this.Text = "minerstat";
             this.Load += new System.EventHandler(this.LauncherForm_Load);
             this.ResumeLayout(false);
 

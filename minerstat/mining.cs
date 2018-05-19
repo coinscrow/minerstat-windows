@@ -149,27 +149,27 @@ namespace minerstat
 
                 // main MINER
 
-                if (!Directory.Exists(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/"))
+                if (!Directory.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/"))
                 {
-                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/");
+                    Directory.CreateDirectory(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
                 }
 
                 string localMinerVersion;
 
-                if (File.Exists(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/minerVersion.txt"))
+                if (File.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerVersion.txt"))
                 {
-                    localMinerVersion = File.ReadAllText(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/minerVersion.txt");
+                    localMinerVersion = File.ReadAllText(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerVersion.txt");
                 }
                 else
                 {
                     localMinerVersion = "0";
                 }
 
-                if (!File.Exists(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/minerUpdated.txt") || !localMinerVersion.Equals(minerVersion))
+                if (!File.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerUpdated.txt") || !localMinerVersion.Equals(minerVersion))
                 {
 
                     // DELETE ALL FILES
-                    System.IO.DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/");
+                    System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/");
 
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -214,33 +214,37 @@ namespace minerstat
         async public static void startMiner(Boolean m1, Boolean m2)
         {
 
+            _instanceMainForm.Invoke((MethodInvoker)delegate {
+                _instanceMainForm.TopMost = true;
+            });
+
             if (m1.Equals(true) && m2.Equals(false))
             {
 
                 if (minerCpu.Equals("True"))
                 {
 
-                    if (!Directory.Exists(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/"))
+                    if (!Directory.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/"))
                     {
-                        Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/");
+                        Directory.CreateDirectory(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
                     }
 
                     string cpuMinerVersion;
 
-                    if (File.Exists(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt"))
+                    if (File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt"))
                     {
-                        cpuMinerVersion = File.ReadAllText(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt");
+                        cpuMinerVersion = File.ReadAllText(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt");
                     }
                     else
                     {
                         cpuMinerVersion = "0";
                     }
 
-                    if (!File.Exists(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/minerUpdated.txt") || !cpuMinerVersion.Equals(cpuVersion))
+                    if (!File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerUpdated.txt") || !cpuMinerVersion.Equals(cpuVersion))
                     {
 
                         // DELETE ALL FILES
-                        System.IO.DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/");
+                        System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
 
                         foreach (FileInfo file in di.GetFiles())
                         {
@@ -272,13 +276,13 @@ namespace minerstat
 
             if (m1.Equals(true))
             {
-                string folderPath = Directory.GetCurrentDirectory() + "/clients/" + minerDefault.ToLower() + "/";
+                string folderPath = Program.currentDir + "/clients/" + minerDefault.ToLower() + "/";
                 System.Diagnostics.Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", "cd " + folderPath + "; " + folderPath + "/start.bat");
             }
 
             if (minerCpu.Equals("True") && m2.Equals(true))
             {
-                string folderPath = Directory.GetCurrentDirectory() + "/clients/" + cpuDefault.ToLower() + "/";
+                string folderPath = Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/";
 
                 switch (mining.cpuDefault.ToLower())
                 {
@@ -340,7 +344,7 @@ namespace minerstat
                     fileExtension = "sgminer.conf";
                 }
 
-                string folderPath = Directory.GetCurrentDirectory() + "/clients/" + minerDefault + "/" + fileExtension;
+                string folderPath = Program.currentDir + "/clients/" + minerDefault + "/" + fileExtension;
                 File.WriteAllText(@folderPath, minerConfig);
 
                 if (minerCpu.Equals("True"))
@@ -361,7 +365,7 @@ namespace minerstat
                             break;
                     }
 
-                    string folderPathCpu = Directory.GetCurrentDirectory() + "/clients/"+ cpuDefault.ToLower() + "/" + cpuConfigFile;
+                    string folderPathCpu = Program.currentDir + "/clients/"+ cpuDefault.ToLower() + "/" + cpuConfigFile;
                     File.WriteAllText(@folderPathCpu, cpuConfig);
                 }
 

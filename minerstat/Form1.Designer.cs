@@ -82,7 +82,7 @@ namespace minerstat
             this.Opacity = 0.99D;
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "minerstat for Windows";
+            this.Text = "minerstat";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frameClosing);
             this.Load += new System.EventHandler(this.frameLoad);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.frameClick);

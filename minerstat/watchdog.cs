@@ -97,33 +97,54 @@ namespace minerstat
 
             } else { Program.watchDogFailover = 0; }
 
+        }
 
-            if (mining.minerCpu.Equals("True") && cpuEnabled.Equals(true))
+        public static void cpuHealth()
+        {
+            if (mining.minerCpu.Equals("True"))
             {
 
-                switch (mining.cpuDefault.ToLower())
+                try
                 {
-                    case "xmr-stak-cpu":
-                        process = "xmr-stak-cpu";
-                        break;
-                    case "cpuminer-opt":
-                        process = "cpuminer-celeron";
-                        break;
-                    case "xmrig":
-                        process = "xmrig";
-                        break;
-                }
-               
-                if (Process.GetProcessesByName(process).Length == 0)
-                {
+                    switch (mining.cpuDefault.ToLower())
+                    {
+                        case "xmr-stak-cpu":
+                            process = "xmr-stak-cpu";
+                            break;
+                        case "cpuminer-opt":
+                            process = "cpuminer-celeron";
+                            break;
+                        case "xmrig":
+                            process = "xmrig";
+                            break;
+                    }
+
+                    if (Process.GetProcessesByName(process).Length == 0)
+                    {
                         Program.NewMessage("WATCHDOG => ERROR", "ERROR");
                         Program.NewMessage("WATCHDOG => " + mining.cpuDefault + " is crashed", "ERROR");
                         Program.NewMessage("WATCHDOG => " + mining.cpuDefault + " attempt to restart", "INFO");
 
-                        mining.startMiner(false, true);
+                        if (Program.watchDogFailoverCpu >= 5)
+                        {
+                            Program.NewMessage("FAILOVER => " + mining.cpuDefault + " download fresh config.", "INFO");
+                            mining.downloadConfig(Program.token, Program.worker);
+                            Program.watchDogFailoverCpu = 0;
+                            mining.startMiner(false, true);
+                        }
+                        else
+                        {
+                            mining.startMiner(false, true);
+                        }
+
+                        Program.watchDogFailover++;
+
+                    } else { Program.watchDogFailoverCpu = 0; }
                 }
-              
+                catch (Exception) { }
             }
         }
+
+
         }
     }

@@ -48,9 +48,6 @@
     <Reference Include="DotNetZip">
       <HintPath>..\minerstat\references\DotNetZip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Win32.TaskScheduler">
-      <HintPath>..\minerstat\references\Microsoft.Win32.TaskScheduler.dll</HintPath>
-    </Reference>
     <Reference Include="MSIAfterburner.NET">
       <HintPath>..\minerstat\references\MSIAfterburner.NET.dll</HintPath>
     </Reference>

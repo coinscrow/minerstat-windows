@@ -68,12 +68,12 @@ namespace Launcher
             try
             {
 
-                if (!Directory.Exists(Directory.GetCurrentDirectory() + "/update/"))
+                if (!Directory.Exists(Program.currentDir + "/update/"))
                 {
-                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/update");
+                    Directory.CreateDirectory(Program.currentDir + "/update");
                 }
 
-                System.IO.DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "/");
+                System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/");
 
                 try
                 {
