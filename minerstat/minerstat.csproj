@@ -73,7 +73,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>128x128.ico</ApplicationIcon>
+    <ApplicationIcon>256x256.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>minerstat.Program</StartupObject>
@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="128x128.ico" />
+    <Content Include="256x256.ico" />
     <Content Include="64x64.ico" />
     <Content Include="asset\images\logo.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

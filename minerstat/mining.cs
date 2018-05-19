@@ -222,6 +222,7 @@ namespace minerstat
                 _instanceMainForm.TopMost = true;
             });
 
+
             if (m1.Equals(true) && m2.Equals(false))
             {
 
@@ -279,13 +280,13 @@ namespace minerstat
 
             if (m1.Equals(true))
             {
-                string folderPath = Program.currentDir + "/clients/" + minerDefault.ToLower() + "/";
-                System.Diagnostics.Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", "cd " + folderPath + "; " + folderPath + "/start.bat");
+                string folderPath = '"' + Program.currentDir + "/clients/" + minerDefault.ToLower() + "/" + '"';
+                Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./start.bat; pause");              
             }
 
             if (minerCpu.Equals("True") && m2.Equals(true))
             {
-                string folderPath = Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/";
+                string folderPath = '"' + Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/" + '"';
 
                 switch (mining.cpuDefault.ToLower())
                 {
@@ -302,8 +303,8 @@ namespace minerstat
                 }
 
                 Program.NewMessage(cpuDefault.ToUpper() + " => " + cpuConfig, "INFO");            
-                    System.Diagnostics.Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", "cd " + folderPath + "; " + folderPath + "/" + filePath);
-       
+                Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./" + filePath + ";");
+
             }
 
             await Task.Delay(2000);
