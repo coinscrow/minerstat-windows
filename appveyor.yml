@@ -37,6 +37,7 @@ install:
 - attrib -r Debug/daemon.exe
 - cd C:\projects\minerstat-windows\minerstat-updater\bin\Debug
 - copy minerstat.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
+- copy minerstat.exe.config C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
 
 artifacts:
 - path: minerstat/bin/x86/Debug
