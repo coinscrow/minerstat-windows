@@ -48,7 +48,7 @@ deploy:
   tag: latest
   release: continuous build - up to date with commits
   auth_token:
-    secure: vdH/WFjpv+yuUkzohJhhxPD5EtAhnBoGc0p/7+mghQSM2Grza+NZlxgN3sFux1DT
+    secure: 8+BupHQlNXPEwEnEiWuiYCZhaqrRmxys2RnfVbMjttXFMeMIFkzKJPRbDMJlE+Jy
   repository: minerstat/minerstat-windows
   prerelease: true
   force_update: true
