@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -98,6 +99,7 @@ namespace minerstat
 
         async public static void Start()
         {
+            minerCpu = "false";
 
             if (Program.StartDelayOver.Equals(false))
             {
@@ -133,11 +135,6 @@ namespace minerstat
                 }
 
                 downloadConfig(Program.token, Program.worker);
-
-                Program.NewMessage("CONFIG => Default miner: " + minerDefault, "INFO");
-                Program.NewMessage("CONFIG => Worker type: " + minerType, "INFO");
-                Program.NewMessage("CONFIG => CPU Mining: " + minerCpu, "INFO");
-                Program.NewMessage(minerDefault.ToUpper() + " => " + minerConfig, "INFO");
 
                 if (!Directory.Exists(@Program.currentDir + "/clients"))
                 {
@@ -194,6 +191,11 @@ namespace minerstat
                 else
                 {
                     await Task.Delay(1500);
+
+                    Program.NewMessage("CONFIG => Default miner: " + minerDefault, "INFO");
+                    Program.NewMessage("CONFIG => Worker type: " + minerType, "INFO");
+                    Program.NewMessage("CONFIG => CPU Mining: " + minerCpu, "INFO");
+                    Program.NewMessage(minerDefault.ToUpper() + " => " + minerConfig, "INFO");
                     // Start miner                     
                     Program.NewMessage("NODE => Waiting for the first sync..", "INFO");
 
@@ -326,12 +328,12 @@ namespace minerstat
                 minerDefault = (string)jObject["default"];
                 cpuDefault = (string)jObject["cpuDefault"];
                 minerType = (string)jObject["type"];
-                minerOverclock = (string)jObject["overclock"];
+                minerOverclock = JsonConvert.SerializeObject(jObject["overclock"]);
                 minerCpu = (string)jObject["cpu"];
-              
+            
                 modules.getData configRequest = new modules.getData("https://api.minerstat.com/v2/conf/gpu/" + token + "/" + worker + "/" + minerDefault.ToLower(), "POST", "");
                 minerConfig = configRequest.GetResponse();
-      
+
                 string fileExtension = "start.bat";
 
                 if (minerDefault.Contains("claymore"))
@@ -372,12 +374,20 @@ namespace minerstat
                     File.WriteAllText(@folderPathCpu, cpuConfig);
                 }
 
-                if (!minerOverclock.Equals(""))
+                if (!JsonConvert.SerializeObject(jObject["overclock"]).Equals(""))
                 {
                     if (Process.GetProcessesByName("msiafterburner").Length > 0)
                     {
-                        var mObject = Newtonsoft.Json.Linq.JObject.Parse(minerOverclock);
-                        clocktune.Manual(minerType, (int)mObject["powerlimit"], (int)mObject["coreclock"], (int)mObject["fan"], (int)mObject["memoryclock"]);
+                        var mObject = Newtonsoft.Json.Linq.JObject.Parse(JsonConvert.SerializeObject(jObject["overclock"]));
+                        var coreclock = (string)mObject["coreclock"];
+                        var memoryclock = (string)mObject["memoryclock"];
+                        var powerlimit = (string)mObject["powerlimit"];
+                        var fan = (string)mObject["fan"];
+                        if (coreclock.Equals("skip")) { coreclock = "9999"; }
+                        if (memoryclock.Equals("skip")) { memoryclock = "9999"; }
+                        if (powerlimit.Equals("skip")) { powerlimit = "9999"; }
+                        if (fan.Equals("skip")) { fan = "9999"; }
+                        clocktune.Manual(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock));
                     } else
                     {
                         Program.NewMessage("WARNING > Install MSI Afterburner to enable overclocking" , "WARNING");
@@ -386,7 +396,7 @@ namespace minerstat
                 }
 
             }
-            catch (Exception) { }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
 
         }
 

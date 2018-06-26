@@ -238,6 +238,18 @@ namespace minerstat
                 mining.downloadConfig(Program.token, Program.worker);
             }
 
+            if (command.Equals("RESTARTWATTS"))
+            {
+                mining.killAll();
+                Program.watchDogs.Stop();
+                Program.syncLoop.Stop();
+                await Task.Delay(1500);
+                mining.downloadConfig(Program.token, Program.worker);
+                await Task.Delay(1000);
+                mining.Start();
+            }
+
+
         }
 
     }

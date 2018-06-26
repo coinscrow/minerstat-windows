@@ -21,28 +21,49 @@ namespace minerstat
             for (int i = 0; i < mahm.Header.GpuEntryCount; i++)
             {
 
-                try
+                if (!fan.Equals(9999))
                 {
-                    macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fan);
-                }
-                catch (Exception ex)
-                {
-                    macm.GpuEntries[i].FanFlagsCur = MACM_SHARED_MEMORY_GPU_ENTRY_FAN_FLAG.None;
-                    macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fan);
+
+                    try
+                    {
+                        macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fan);
+                    }
+                    catch (Exception ex)
+                    {
+                        macm.GpuEntries[i].FanFlagsCur = MACM_SHARED_MEMORY_GPU_ENTRY_FAN_FLAG.None;
+                        macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fan);
+                    }
                 }
 
-                macm.GpuEntries[i].PowerLimitCur = powerlimit;
+                if (!powerlimit.Equals(9999))
+                {
+                    macm.GpuEntries[i].PowerLimitCur = powerlimit;
+                }
 
                 if (gpuType.Equals("nvidia"))
                 {
-                    macm.GpuEntries[i].CoreClockBoostCur = coreclock * 1000;
-                    macm.GpuEntries[i].MemoryClockBoostCur = memoryclock * 1000;
+                    if (!coreclock.Equals(9999))
+                    {
+                        macm.GpuEntries[i].CoreClockBoostCur = coreclock * 1000;
+                    }
+
+                    if (!memoryclock.Equals(9999))
+                    {
+                        macm.GpuEntries[i].MemoryClockBoostCur = memoryclock * 1000;
+                    }
                 }
 
                 if (gpuType.Equals("amd"))
                 {
-                    macm.GpuEntries[i].CoreClockCur = Convert.ToUInt32(coreclock * 1000);
-                    macm.GpuEntries[i].MemoryClockCur = Convert.ToUInt32(memoryclock * 1000);
+                    if (!coreclock.Equals(9999))
+                    {
+                        macm.GpuEntries[i].CoreClockCur = Convert.ToUInt32(coreclock * 1000);
+                    }
+                    if (!memoryclock.Equals(9999))
+                    {
+                        macm.GpuEntries[i].MemoryClockCur = Convert.ToUInt32(memoryclock * 1000);
+
+                    }
                 }
 
 
