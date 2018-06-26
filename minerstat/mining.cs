@@ -348,6 +348,10 @@ namespace minerstat
                 {
                     fileExtension = "sgminer.conf";
                 }
+                if (minerDefault.Contains("stak-xmr"))
+                {
+                    fileExtension = "pools.txt";
+                }
 
                 string folderPath = Program.currentDir + "/clients/" + minerDefault + "/" + fileExtension;
                 File.WriteAllText(@folderPath, minerConfig);
