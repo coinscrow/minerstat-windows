@@ -116,6 +116,9 @@ namespace minerstat
                     case "ewbf-zec":
                         algoType = "core";
                         break;
+                    case "ewbf-zhash":
+                        algoType = "core";
+                        break;
                     case "zm-zec":
                         algoType = "core";
                         break;

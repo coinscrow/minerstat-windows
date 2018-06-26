@@ -68,6 +68,9 @@ namespace minerstat
                 case "ewbf-zec":
                     process = "miner";
                     break;
+                case "ewbf-zhash":
+                    process = "miner";
+                    break;
                 case "zm-zec":
                     process = "zm";
                     break;
