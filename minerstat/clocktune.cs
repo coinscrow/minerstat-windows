@@ -95,7 +95,7 @@ namespace minerstat
                     case "cast-xmr":
                         algoType = "memory";
                         break;
-                    case "stak-xmr":
+                    case "xmr-stak":
                         algoType = "memory";
                         break;
                     case "ethminer":

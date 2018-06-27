@@ -233,10 +233,14 @@ namespace minerstat
 
             lock (((ICollection)minerstat.Program.Message).SyncRoot)
             {
-                foreach (string msg in Program.Message)
+                try
                 {
-                    response += msg;
-                }
+                    foreach (string msg in Program.Message)
+                    {
+                        response += msg;
+                    }
+
+                } catch (Exception ex) { Console.WriteLine(ex.ToString()); }
             }
 
             return response;

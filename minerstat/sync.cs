@@ -54,10 +54,10 @@ namespace minerstat
                         switch (mining.minerDefault.ToLower())
                         {
                             case "cast-xmr":
-                                monitorURL = "http://localhost:7777";
+                                monitorURL = "http://127.0.0.1:7777";
                                 break;
-                            case "stak-xmr":
-                                monitorURL = "http://localhost:2222/api.json";
+                            case "xmr-stak":
+                                monitorURL = "http://127.0.0.1:2222/api.json";
                                 break;
                             case "bminer":
                                 monitorURL = "http://127.0.0.1:1880/api/status";
@@ -73,7 +73,7 @@ namespace minerstat
                         if (mining.minerDefault.ToLower().Contains("sgminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("ethminer")) { apiResponse = "skip"; }
-                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("stak-xmr") || mining.minerDefault.ToLower().Contains("bminer"))
+                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer"))
                         {
 
                             string input;

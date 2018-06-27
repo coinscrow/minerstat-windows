@@ -296,8 +296,7 @@ namespace minerstat
                         filePath = "xmr-stak-cpu.exe";
                         break;
                     case "cpuminer-opt":
-                        filePath = "start.bat" +
-                            "";
+                        filePath = "start.bat";
                         break;
                     case "xmrig":
                         filePath = "xmrig.exe";
@@ -348,7 +347,7 @@ namespace minerstat
                 {
                     fileExtension = "sgminer.conf";
                 }
-                if (minerDefault.Contains("stak-xmr"))
+                if (minerDefault.Contains("xmr-stak"))
                 {
                     fileExtension = "pools.txt";
                 }

@@ -26,7 +26,7 @@ namespace minerstat
                 case "cast-xmr":
                     process = "cast_xmr-vega";
                     break;
-                case "stak-xmr":
+                case "xmr-stak":
                     process = "xmr-stak";
                     break;
                 case "ccminer-alexis":
