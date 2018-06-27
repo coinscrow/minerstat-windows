@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace minerstat
     {
         public static string process;
         public static Boolean cpuEnabled;
-        public static void health(object sender, ElapsedEventArgs exw)
+        async public static void health(object sender, ElapsedEventArgs exw)
         {     
             switch (mining.minerDefault.ToLower())
             {
@@ -79,10 +80,16 @@ namespace minerstat
             if (Process.GetProcessesByName(process).Length == 0)
             {
 
+                if (mining.minerCpu.Equals("False"))
+                {
+                    mining.killAll();
+                }
+
                 Program.NewMessage("WATCHDOG => ERROR", "ERROR");
                 Program.NewMessage("WATCHDOG => " + mining.minerDefault + " is crashed", "ERROR");
                 Program.NewMessage("WATCHDOG => " + mining.minerDefault + " attempt to restart", "INFO");
 
+                await Task.Delay(1000);
 
                 if (Program.watchDogFailover >= 5)
                 {

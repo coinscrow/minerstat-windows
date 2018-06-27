@@ -196,6 +196,9 @@
     <Content Include="128x128.ico" />
     <Content Include="256x256.ico" />
     <Content Include="64x64.ico" />
+    <Content Include="asset\fastclick.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="asset\images\logo.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

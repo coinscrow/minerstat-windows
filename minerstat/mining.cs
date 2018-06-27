@@ -100,6 +100,7 @@ namespace minerstat
         async public static void Start()
         {
             minerCpu = "false";
+            Program.SyncStatus = false;
 
             if (Program.StartDelayOver.Equals(false))
             {
@@ -309,6 +310,8 @@ namespace minerstat
             }
 
             await Task.Delay(2000);
+
+            Program.SyncStatus = true;
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
                 _instanceMainForm.TopMost = false;

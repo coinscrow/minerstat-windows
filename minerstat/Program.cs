@@ -99,7 +99,7 @@ namespace minerstat {
                 monitorport = random.Next(8600, 8700);
 
                 // Initalize Watchdog
-                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(3).TotalMilliseconds); // set the time (5 min in this case)
+                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(5).TotalMilliseconds); // set the time (5 min in this case)
                 watchDogs.AutoReset = true;
                 watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
                 watchDogFailover = 0;
