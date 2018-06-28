@@ -206,6 +206,9 @@ namespace minerstat
                     // Start watchDog
                     Program.watchDogs.Start();
 
+                    // Start Crash Protection
+                    Program.crashLoop.Start();
+
                     // Start SYNC & Remote Command
                     Program.syncLoop.Start();
                 }                      
@@ -220,6 +223,15 @@ namespace minerstat
 
         async public static void startMiner(Boolean m1, Boolean m2)
         {
+
+            // Delete pending remote commands
+            modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
+            string responseString = response.GetResponse();
+
+            if (!responseString.Equals(""))
+            {
+                Program.NewMessage("PENDING COMMAND REMOVED  => " + responseString, "");
+            }
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
                 _instanceMainForm.TopMost = true;

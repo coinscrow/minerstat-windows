@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace minerstat {
@@ -46,6 +47,7 @@ namespace minerstat {
   // Timers
   public static System.Timers.Timer watchDogs;
   public static System.Timers.Timer syncLoop;
+  public static System.Timers.Timer crashLoop;
   public static Boolean SyncStatus;
 
   // Resources
@@ -99,15 +101,20 @@ namespace minerstat {
                 monitorport = random.Next(8600, 8700);
 
                 // Initalize Watchdog
-                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(5).TotalMilliseconds); // set the time (5 min in this case)
+                watchDogs = new System.Timers.Timer(TimeSpan.FromSeconds(5).TotalMilliseconds); // set the time (5 sec in this case)
                 watchDogs.AutoReset = true;
                 watchDogs.Elapsed += new System.Timers.ElapsedEventHandler(watchDog.health);
                 watchDogFailover = 0;
 
                 // Initalize Syncing
-                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (5 min in this case)
+                syncLoop = new System.Timers.Timer(TimeSpan.FromSeconds(30).TotalMilliseconds); // set the time (0.5 min in this case)
                 syncLoop.AutoReset = true;
                 syncLoop.Elapsed += new System.Timers.ElapsedEventHandler(sync.loop);
+
+                // Double Crash Protection
+                crashLoop = new System.Timers.Timer(TimeSpan.FromSeconds(1800).TotalMilliseconds); // set the time (30 min in this case)
+                crashLoop.AutoReset = true;
+                crashLoop.Elapsed += new System.Timers.ElapsedEventHandler(crash);
 
                 // Check update folder
                 if (Directory.Exists(currentDir + "/update/"))
@@ -139,6 +146,18 @@ namespace minerstat {
                 }
 
   }
+
+        public static void crash(object sender, ElapsedEventArgs exw)
+        {
+            // STOP TIMERS
+            watchDogs.Stop();
+            syncLoop.Stop();
+            crashLoop.Stop();
+
+            // AUTO UPDATE IF AVAILABLE
+
+            Application.Restart();
+        }
 
   public static void NewMessage(string text, string type) {
    try {

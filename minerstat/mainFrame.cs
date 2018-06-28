@@ -132,6 +132,7 @@ namespace minerstat
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
+            Program.crashLoop.Stop();
 
             System.Windows.Forms.Application.Exit();
         }
@@ -171,7 +172,8 @@ namespace minerstat
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
-           
+            Program.crashLoop.Stop();
+
             Application.Restart();
 
         }
@@ -182,6 +184,7 @@ namespace minerstat
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
+            Program.crashLoop.Stop();
 
             // AUTO UPDATE IF AVAILABLE
 
@@ -196,6 +199,8 @@ namespace minerstat
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
+            Program.crashLoop.Stop();
+            //Program.crashLoop.Stop();
 
             mining.killAll();
 
@@ -242,7 +247,7 @@ namespace minerstat
                         response += msg;
                     }
 
-                } catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                } catch (Exception ex) { Application.Restart(); }
             }
 
             return response;
