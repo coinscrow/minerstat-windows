@@ -137,6 +137,7 @@
     <Compile Include="mainFrame.cs" />
     <Compile Include="mining.cs" />
     <Compile Include="modules.cs" />
+    <Compile Include="offline.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sync.cs" />

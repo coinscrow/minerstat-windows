@@ -33,6 +33,7 @@ namespace minerstat
                 if (modules.checkNet(false) == false)
                 {
                     Program.NewMessage("SYNC => Skip: CONNECTION LOST", "ERROR");
+                    Program.connectionError = true;
                 }
                 else
                 {
@@ -40,6 +41,7 @@ namespace minerstat
                     if (modules.IsReach().Equals(false))
                     {
                         Program.NewMessage("SYNC => Skip: MINERSTAT UNREACHABLE", "ERROR");
+                        Program.connectionError = true;
                     }
                     else
                     {
@@ -48,6 +50,7 @@ namespace minerstat
                         apiResponse = "";
                         apiHardware = "";
                         apiCpu = "";
+                        Program.connectionError = false;
 
 
                         // 1) PREPARE THE URL'S if Needed

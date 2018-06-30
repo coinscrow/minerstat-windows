@@ -43,11 +43,14 @@ namespace minerstat {
   public static byte[] datac;
   public static DateTime dt2c;
   public static double connectionspeed;
+  public static Boolean connectionError;
+  public static Nullable<bool> prevConnectionError;
 
-  // Timers
-  public static System.Timers.Timer watchDogs;
+        // Timers
+        public static System.Timers.Timer watchDogs;
   public static System.Timers.Timer syncLoop;
   public static System.Timers.Timer crashLoop;
+  public static System.Timers.Timer offlineLoop;
   public static Boolean SyncStatus;
 
   // Resources
@@ -116,6 +119,13 @@ namespace minerstat {
                 crashLoop.AutoReset = true;
                 crashLoop.Elapsed += new System.Timers.ElapsedEventHandler(crash);
 
+                // Offline Events
+                prevConnectionError = null;
+                offlineLoop = new System.Timers.Timer(TimeSpan.FromSeconds(10).TotalMilliseconds); // set the time (10 sec in this case)
+                offlineLoop.AutoReset = true;
+                offlineLoop.Elapsed += new System.Timers.ElapsedEventHandler(offline.protect);
+                offlineLoop.Start();
+
                 // Check update folder
                 if (Directory.Exists(currentDir + "/update/"))
                 {
@@ -137,7 +147,7 @@ namespace minerstat {
                 if (args.Contains("startWithWindows"))
                 {
                     StartDelayOver = false;
-                    StartDelay = 8000;
+                    StartDelay = 5000;
                 }
 
                 // RUN UX

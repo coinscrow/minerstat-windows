@@ -207,16 +207,19 @@ namespace minerstat
                     {
                         Program.connectionspeed = CheckInternetSpeed() / 1000;
                         Program.NewMessage("NODE => Estimated Internet Speed: " + Program.connectionspeed + " MB/s", "INFO");
+                        Program.connectionError = false;
                     }
                     return true;
                 }
                 else
                 {
+                    Program.connectionError = true;
                     return false;
                 }
             }
             catch (Exception)
             {
+                Program.connectionError = true;
                 return false;
             }
         }
@@ -232,10 +235,12 @@ namespace minerstat
 
                 if (res.Contains("ok"))
                 {
+                    Program.connectionError = false;
                     return true;
                 }
                 else
                 {
+                    Program.connectionError = true;
                     return false;
                 }
 
