@@ -37,7 +37,7 @@ namespace Launcher
                 string redirUrl = response.Headers["Location"];
                 response.Close();
 
-                MessageBox.Show(redirUrl);
+               // MessageBox.Show(redirUrl);
 
                 using (WebClient webClient = new WebClient())
                 {
