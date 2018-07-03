@@ -8,4 +8,4 @@ This software **only works with [my.minerstat.com](https://my.minerstat.com) int
 
 | Installer | Portable |
 |--|--|
-| <a href='https://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-installer.msi'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> | <a href='https://ci.appveyor.com/api/projects/minerstat/minerstat-windows/artifacts/minerstat/bin/x86/minerstat-portable.zip'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> |
+| <a href='https://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-installer.zip'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> | <a href='https://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-portable.zip'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> |
