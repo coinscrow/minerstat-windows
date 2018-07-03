@@ -29,15 +29,23 @@ namespace minerstat
             
             InitializeComponent();
 
-
-            if (File.Exists(@Program.minerstatDir + "/user.json"))
+            try
             {
-                string json = File.ReadAllText(@Program.minerstatDir + "/user.json");
-                Program.loginjson = json;
 
-                var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
-                Program.token = (string)jObject["token"];
-                Program.worker = (string)jObject["worker"];
+                if (File.Exists(@Program.minerstatDir + "/user.json"))
+                {
+                    string json = File.ReadAllText(@Program.minerstatDir + "/user.json");
+                    Program.loginjson = json;
+
+                    var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    Program.token = (string)jObject["token"];
+                    Program.worker = (string)jObject["worker"];
+                }
+
+            } catch (Exception err)
+            {
+                File.Delete(@Program.minerstatDir + "/user.json");
+                Application.Restart();
             }
 
             InitializeChromium();
