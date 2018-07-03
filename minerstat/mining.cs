@@ -207,7 +207,7 @@ namespace minerstat
                     Program.watchDogs.Start();
 
                     // Start Crash Protection
-                    Program.crashLoop.Start();
+                    //Program.crashLoop.Start();
 
                     // Start SYNC & Remote Command
                     Program.syncLoop.Start();
@@ -240,6 +240,10 @@ namespace minerstat
 
             if (m1.Equals(true) && m2.Equals(false))
             {
+                Program.watchDogs.Stop();
+                Program.syncLoop.Stop();
+                //Program.crashLoop.Stop();
+
 
                 if (minerCpu.Equals("True"))
                 {
@@ -290,6 +294,11 @@ namespace minerstat
                     }
 
                 }
+
+                Program.watchDogs.Start();
+                Program.syncLoop.Start();
+                //Program.crashLoop.Start();
+
 
             }
 

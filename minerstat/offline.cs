@@ -24,7 +24,7 @@ namespace minerstat
                     // ONLY RUN THIS IS THE PREV STATUS WAS != OK
                     Program.watchDogs.Stop();
                     Program.syncLoop.Stop();
-                    Program.crashLoop.Stop();
+                    //Program.crashLoop.Stop();
                     await Task.Delay(200);
                     Application.Restart();
                 }
@@ -39,7 +39,7 @@ namespace minerstat
                     // ONLY RUN THIS IF THE PREV STATUS WAS OK
                     Program.watchDogs.Stop();
                     Program.syncLoop.Stop();
-                    Program.crashLoop.Stop();
+                    //Program.crashLoop.Stop();
                     await Task.Delay(200);
                     Application.Restart();
                 }

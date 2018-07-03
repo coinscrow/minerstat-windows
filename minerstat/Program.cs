@@ -163,7 +163,7 @@ namespace minerstat {
             // STOP TIMERS
             watchDogs.Stop();
             syncLoop.Stop();
-            crashLoop.Stop();
+            //crashLoop.Stop();
 
             // AUTO UPDATE IF AVAILABLE
 
