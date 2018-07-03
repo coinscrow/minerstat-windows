@@ -28,10 +28,22 @@ namespace Launcher
             fileName = "update.zip";
             try
             {
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-portable.zip");
+                request.AllowAutoRedirect = false;
+                request.UserAgent = "minerstat v1.0 (Node)";
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                string redirUrl = response.Headers["Location"];
+                response.Close();
+
+                MessageBox.Show(redirUrl);
+
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(downloadProgressChanged);
-                    webClient.DownloadFileAsync(new Uri("https://ci.appveyor.com/api/projects/minerstat/minerstat-windows/artifacts/minerstat/bin/x86/minerstat-portable.zip"), "update.zip");
+                    webClient.Headers.Add("user-agent", "minerstat v1.0 (Node)");
+                    webClient.DownloadFileAsync(new Uri(redirUrl), "update.zip");
                     webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DoSomethingOnFinish);
 
                 }
