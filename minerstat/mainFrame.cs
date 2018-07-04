@@ -218,7 +218,7 @@ namespace minerstat
 
         await System.Threading.Tasks.Task.Delay(200);
         mining.Start();
-            Program.syncLoop.Start();
+            //Program.syncLoop.Start();
 
         }
 
