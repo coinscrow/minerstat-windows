@@ -156,7 +156,7 @@ namespace minerstat
                                 {
                                     ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
                                 }
-                                catch (Exception ram) { }
+                                catch (Exception ram) { Program.NewMessage("ERROR => " + ram.ToString(), ""); }
 
                                 var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + Convert.ToInt32(ramCounter.NextValue()).ToString() + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
                                 var responseString = await response.Content.ReadAsStringAsync();
@@ -175,7 +175,7 @@ namespace minerstat
 
 
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }
                         } else
                         {
 
@@ -200,7 +200,7 @@ namespace minerstat
             }
             catch (Exception error)
             {
-                Program.NewMessage(error.ToString(), "");
+                Program.NewMessage("ERROR => " + error.ToString(), "");
             }
 
 

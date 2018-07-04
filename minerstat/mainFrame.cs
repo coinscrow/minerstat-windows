@@ -211,10 +211,14 @@ namespace minerstat
 
         Program.SyncStatus = false;
         Program.NewMessage("USER => Mining start", "INFO");
-        mining.killAll();
+
+            Program.syncLoop.Stop();
+            mining.killAll();
+        
 
         await System.Threading.Tasks.Task.Delay(200);
-        mining.Start(); 
+        mining.Start();
+            Program.syncLoop.Start();
 
         }
 
