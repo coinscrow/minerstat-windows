@@ -33,7 +33,7 @@ namespace Launcher
             lib = Program.currentDir + @"resources\libcef.dll";
             browser = Program.currentDir + @"resources\CefSharp.BrowserSubprocess.exe";
             locales = Program.currentDir + @"resources\locales\";
-            res = Program.currentDir + @"resources\";
+            //res = Program.currentDir + @"resources\";
 
             var libraryLoader = new CefLibraryHandle(lib);
             bool isValid = !libraryLoader.IsInvalid;
@@ -42,11 +42,11 @@ namespace Launcher
             var settings = new CefSettings();
             settings.BrowserSubprocessPath = browser;
             settings.LocalesDirPath = locales;
-            settings.ResourcesDirPath = res;
+            //settings.ResourcesDirPath = res;
             settings.SetOffScreenRenderingBestPerformanceArgs();
             settings.WindowlessRenderingEnabled = true;
 
-            Cef.Initialize();
+            Cef.Initialize(settings);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

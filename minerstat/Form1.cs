@@ -80,7 +80,7 @@ namespace minerstat
         private void frameLoad(object sender, EventArgs e)
         {
             hardwareMonitor.jsonserver();
-            chromeBrowser.ShowDevTools();
+            //chromeBrowser.ShowDevTools();
             if (File.Exists("update.zip"))
             {
                 try

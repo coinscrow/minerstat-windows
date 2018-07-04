@@ -63,7 +63,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length != 0)
+            if (args.Length == 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
@@ -74,7 +74,7 @@ namespace minerstat {
                 lib = Program.currentDir + @"resources\libcef.dll";
                 browser = Program.currentDir + @"resources\CefSharp.BrowserSubprocess.exe";
                 locales = Program.currentDir + @"resources\locales\";
-                res = Program.currentDir + @"resources\";
+                //res = Program.currentDir + @"resources\";
 
                 var libraryLoader = new CefLibraryHandle(lib);
                 bool isValid = !libraryLoader.IsInvalid;
@@ -86,7 +86,7 @@ namespace minerstat {
                 settings.ResourcesDirPath = res;
                 settings.SetOffScreenRenderingBestPerformanceArgs();
                 settings.WindowlessRenderingEnabled = true;
-                Cef.Initialize();
+                Cef.Initialize(settings);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
