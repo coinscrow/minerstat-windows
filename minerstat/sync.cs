@@ -170,11 +170,16 @@ namespace minerstat
                                 }
 
                               
-                                int package = (apiHardware.Length + apiResponse.Length + apiCpu.Length) * sizeof(Char);
-                                modules.updateTraffic(package);
-
-                                Program.NewMessage("SYNC => API Updated [ ~ " + (package / 1000) + " KB ]", "INFO");
-
+                                 try
+                                {
+                                    int package = (apiHardware.Length + apiResponse.Length + apiCpu.Length) * sizeof(Char);
+                                    modules.updateTraffic(package);
+                                    Program.NewMessage("SYNC => API Updated [ ~ " + (package / 1000) + " KB ]", "INFO");
+                                } catch (Exception ex)
+                                {
+                                    Program.NewMessage("SYNC => API Updated [ ~ 1 KB ]", "INFO");
+                                    modules.updateTraffic(1);
+                                }
 
                             }
                             catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }
