@@ -80,7 +80,7 @@ namespace minerstat
         private void frameLoad(object sender, EventArgs e)
         {
             hardwareMonitor.jsonserver();
-
+            chromeBrowser.ShowDevTools();
             if (File.Exists("update.zip"))
             {
                 try
@@ -123,6 +123,7 @@ namespace minerstat
             browserSettings.FileAccessFromFileUrls = CefState.Enabled;
             browserSettings.UniversalAccessFromFileUrls = CefState.Enabled;
             chromeBrowser.BrowserSettings = browserSettings;
+
             Form1_Shown();
         }
 

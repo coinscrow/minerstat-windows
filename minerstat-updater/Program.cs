@@ -42,10 +42,11 @@ namespace Launcher
             var settings = new CefSettings();
             settings.BrowserSubprocessPath = browser;
             settings.LocalesDirPath = locales;
-            //settings.ResourcesDirPath = res;
+            settings.ResourcesDirPath = res;
             settings.SetOffScreenRenderingBestPerformanceArgs();
+            settings.WindowlessRenderingEnabled = true;
 
-            Cef.Initialize(settings);
+            Cef.Initialize();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

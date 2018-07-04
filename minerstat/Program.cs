@@ -63,7 +63,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
@@ -83,10 +83,10 @@ namespace minerstat {
                 var settings = new CefSettings();
                 settings.BrowserSubprocessPath = browser;
                 settings.LocalesDirPath = locales;
-                //settings.ResourcesDirPath = res;
+                settings.ResourcesDirPath = res;
                 settings.SetOffScreenRenderingBestPerformanceArgs();
-
-                Cef.Initialize(settings);
+                settings.WindowlessRenderingEnabled = true;
+                Cef.Initialize();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

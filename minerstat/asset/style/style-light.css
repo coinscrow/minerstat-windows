@@ -159,7 +159,7 @@ body{background:#f8f9fc;text-align:left;font-weight:300;font-size:16px;line-heig
 .draw:after{animation-duration:800ms;animation-timing-function:ease;animation-name:checkmark;transform:scaleX(-1) rotate(135deg);}
 .checkmark:after{opacity:1;height:10px;width:5px;transform-origin:left top;border-right:3px solid #52cca5;border-top:3px solid #52cca5;content:'';left:8px;top:15px;position:absolute;}
 
-.empty{position:relative;margin:0;-webkit-app-region:drag;width:865px;height:385px;position:relative;border-radius:0 0 5px 5px;overflow:hidden;}
+.empty{position:relative;margin:0;-webkit-app-region:drag;width:780px;height:385px;position:relative;border-radius:0 0 5px 5px;overflow:hidden;}
 .empty .logo{width:144px;height:36px;background:url("../images/logo.svg") no-repeat;background-size:144px 36px;margin:24px auto 45px auto;}
 .empty .icons{position:absolute;top:30px;right:30px;left:30px;display:flex;justify-content:space-between;}
 .empty .icons .icon{cursor:pointer;opacity:0.2;}
