@@ -206,9 +206,9 @@ namespace minerstat
                     if (est.Equals(true))
                     {
                         Program.connectionspeed = CheckInternetSpeed() / 1000;
-                        Program.NewMessage("NODE => Estimated Internet Speed: " + Program.connectionspeed + " MB/s", "INFO");
-                        Program.connectionError = false;
+                        Program.NewMessage("NODE => Estimated Internet Speed: " + Program.connectionspeed + " MB/s", "INFO");                       
                     }
+                    Program.connectionError = false;
                     return true;
                 }
                 else

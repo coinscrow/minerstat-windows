@@ -63,7 +63,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
@@ -160,14 +160,7 @@ namespace minerstat {
 
         public static void crash(object sender, ElapsedEventArgs exw)
         {
-            // STOP TIMERS
-            watchDogs.Stop();
-            syncLoop.Stop();
-            //crashLoop.Stop();
 
-            // AUTO UPDATE IF AVAILABLE
-
-            Application.Restart();
         }
 
   public static void NewMessage(string text, string type) {
