@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,34 +24,55 @@ namespace Launcher
         [STAThread]
         static void Main()
         {
-            // Directories
-            //currentDir = System.Environment.CurrentDirectory;
-            currentDir = AppDomain.CurrentDomain.BaseDirectory;
-            tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            minerstatDir = tempDir + "/minerstat";
+            try
+            {
+                // Directories
+                //currentDir = System.Environment.CurrentDirectory;
+                currentDir = AppDomain.CurrentDomain.BaseDirectory;
+                tempDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                minerstatDir = tempDir + "/minerstat";
 
-            // Assigning file paths to varialbles
-            lib = Program.currentDir + @"resources\libcef.dll";
-            browser = Program.currentDir + @"resources\CefSharp.BrowserSubprocess.exe";
-            locales = Program.currentDir + @"resources\locales\";
-            //res = Program.currentDir + @"resources\";
+                // Assigning file paths to varialbles
+                lib = Program.currentDir + @"resources\libcef.dll";
+                browser = Program.currentDir + @"resources\CefSharp.BrowserSubprocess.exe";
+                locales = Program.currentDir + @"resources\locales\";
+                //res = Program.currentDir + @"resources\";
 
-            var libraryLoader = new CefLibraryHandle(lib);
-            bool isValid = !libraryLoader.IsInvalid;
-            libraryLoader.Dispose();
+                var libraryLoader = new CefLibraryHandle(lib);
+                bool isValid = !libraryLoader.IsInvalid;
+                libraryLoader.Dispose();
 
-            var settings = new CefSettings();
-            settings.BrowserSubprocessPath = browser;
-            settings.LocalesDirPath = locales;
-            //settings.ResourcesDirPath = res;
-            settings.SetOffScreenRenderingBestPerformanceArgs();
-            settings.WindowlessRenderingEnabled = true;
+                var settings = new CefSettings();
+                settings.BrowserSubprocessPath = browser;
+                settings.LocalesDirPath = locales;
+                settings.ResourcesDirPath = res;
+                settings.SetOffScreenRenderingBestPerformanceArgs();
+                settings.WindowlessRenderingEnabled = true;
+                Cef.Initialize(settings);
 
-            Cef.Initialize(settings);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new LauncherForm());
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LauncherForm());
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("ERROR => " + err.ToString());
+                try
+                {
+                    ProcessStartInfo Info = new ProcessStartInfo();
+                    Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start daemon.exe --verify e3546rfgre3t";
+                    Info.WindowStyle = ProcessWindowStyle.Hidden;
+                    Info.CreateNoWindow = true;
+                    Info.FileName = "cmd.exe";
+                    Process.Start(Info);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("ERROR => " + ex.ToString());
+                }
+
+            }
         }
 
         public class getData

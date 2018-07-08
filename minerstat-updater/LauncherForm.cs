@@ -146,17 +146,20 @@ namespace Launcher
 
         private void StartApp()
         {
-            if (!File.Exists(name_of_program))
+            try
             {
-                MessageBox.Show("Main program file doesn't exist, try reinstalling or updating app.");
-                Application.Exit();
-            }
-            ProcessStartInfo Info = new ProcessStartInfo();
-            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start " + name_of_program + " --verify e3546rfgre3t";
-            Info.WindowStyle = ProcessWindowStyle.Hidden;
-            Info.CreateNoWindow = true;
-            Info.FileName = "cmd.exe";
-            Process.Start(Info);
+                if (!File.Exists(name_of_program))
+                {
+                    MessageBox.Show("Main program file doesn't exist, try reinstalling or updating app.");
+                    Application.Exit();
+                }
+                ProcessStartInfo Info = new ProcessStartInfo();
+                Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start " + name_of_program + " --verify e3546rfgre3t";
+                Info.WindowStyle = ProcessWindowStyle.Hidden;
+                Info.CreateNoWindow = true;
+                Info.FileName = "cmd.exe";
+                Process.Start(Info);
+            } catch(Exception err) { MessageBox.Show("ERROR => " + err.ToString()); }
             Application.Exit();
         }
 
