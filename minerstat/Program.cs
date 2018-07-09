@@ -148,7 +148,7 @@ namespace minerstat {
                 if (args.Contains("startWithWindows"))
                 {
                     StartDelayOver = false;
-                    StartDelay = 5000;
+                    StartDelay = 10000;
                 }
 
                 // RUN UX
