@@ -6,7 +6,7 @@
 
 This software **only works with [my.minerstat.com](https://my.minerstat.com) interface**, it's **not in sync** with our old system
 
-**IMPORTANT NOTE** - Visual C++ 2013/2015 is required 
+**IMPORTANT NOTE** - Visual C++ 2013/2015 x86 is required 
 
 http://static.minerstat.farm/miners/windows/vc_redist_2013.x86.exe
 http://static.minerstat.farm/miners/windows/vc_redist_2015.x86.exe
