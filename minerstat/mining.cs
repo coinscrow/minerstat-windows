@@ -27,7 +27,7 @@ namespace minerstat
         private static string cpuConfigFile;
         private static string cpuVersion;
         private static WebClient wc = new WebClient();
-        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
+        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/versionStable.txt";
 
         public mining(Form1 mainForm)
         {
@@ -85,7 +85,7 @@ namespace minerstat
         {
             if (!File.Exists("minerstat.exe"))
             {
-                MessageBox.Show("Main program file doesn't exist, try reinstalling or updating app.");
+                MessageBox.Show("Main program file doesn't exist, try reinstalling or update the app.");
                 Application.Exit();
             }
             ProcessStartInfo Info = new ProcessStartInfo();
@@ -198,7 +198,7 @@ namespace minerstat
                     Program.NewMessage("CONFIG => CPU Mining: " + minerCpu, "INFO");
                     Program.NewMessage(minerDefault.ToUpper() + " => " + minerConfig, "INFO");
                     // Start miner                     
-                    Program.NewMessage("NODE => Waiting for the first sync..", "INFO");
+                    Program.NewMessage("NODE => Waiting for the next sync..", "INFO");
 
                     Program.SyncStatus = true;
                     startMiner(true, false);
@@ -224,14 +224,14 @@ namespace minerstat
         async public static void startMiner(Boolean m1, Boolean m2)
         {
 
-            // Delete pending remote commands
-            modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
-            string responseString = response.GetResponse();
-
-            if (!responseString.Equals(""))
+            if (File.Exists(Program.currentDir + "/" + minerDefault.ToLower() + ".zip"))
             {
-                Program.NewMessage("PENDING COMMAND REMOVED  => " + responseString, "");
+                try
+                {
+                    File.Delete(Program.currentDir + "/" + minerDefault.ToLower() + ".zip");
+                } catch (Exception) { Console.WriteLine("ERROR => File .zip removal error"); }
             }
+
 
             _instanceMainForm.Invoke((MethodInvoker)delegate {
                 _instanceMainForm.TopMost = true;
@@ -405,6 +405,10 @@ namespace minerstat
                 {
                     if (Process.GetProcessesByName("msiafterburner").Length > 0)
                     {
+                        try
+                        {
+                            Program.NewMessage("OVERCLOCK => " + JsonConvert.SerializeObject(jObject["overclock"]), "WARNING");
+                        } catch (Exception) { }
                         var mObject = Newtonsoft.Json.Linq.JObject.Parse(JsonConvert.SerializeObject(jObject["overclock"]));
                         var coreclock = (string)mObject["coreclock"];
                         var memoryclock = (string)mObject["memoryclock"];
@@ -417,9 +421,18 @@ namespace minerstat
                         clocktune.Manual(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock));
                     } else
                     {
-                        Program.NewMessage("WARNING > Install MSI Afterburner to enable overclocking" , "WARNING");
+                        Program.NewMessage("WARNING => Install MSI Afterburner to enable overclocking" , "WARNING");
                     }
 
+                }
+
+                // Delete pending remote commands
+                modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
+                string responseString = response.GetResponse();
+
+                if (!responseString.Equals(""))
+                {
+                    Program.NewMessage("PENDING COMMAND REMOVED  => " + responseString, "");
                 }
 
             }

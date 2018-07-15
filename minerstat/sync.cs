@@ -160,7 +160,7 @@ namespace minerstat
                                 }
                                 catch (Exception ram) { }
 
-                                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
+                                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4.0.4&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
                                 var responseString = await response.Content.ReadAsStringAsync();
 
                                 if (!responseString.Equals(""))

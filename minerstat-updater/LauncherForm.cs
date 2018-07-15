@@ -16,7 +16,7 @@ namespace Launcher
     {
         private static WebClient wc = new WebClient();
         private string name_of_program = "daemon.exe";
-        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/version.txt";
+        private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/versionStable.txt";
         public ChromiumWebBrowser chromeBrowser;
         public static string remoteVersion;
         DropShadow ds = new DropShadow();

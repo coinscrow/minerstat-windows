@@ -4,6 +4,7 @@ using System.Net;
 using Ionic.Zip;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace minerstat {
  class Downloader {
@@ -14,12 +15,21 @@ namespace minerstat {
   private static string downloadUrl = "https://static.minerstat.farm/miners/windows/";
   public static string minerVersion;
   private static string minerType;
+  private static string hit;
+  private static string decompressStarted;
 
-   internal static bool downloadFile(string v, string n, string cli) {
+        internal static bool downloadFile(string v, string n, string cli) {
    bool retVal = false;
    fileName = v;
    fileNameReal = n;
    minerType = cli;
+   if (!cli.Equals("cpu")) {
+        hit = "0";
+   } else
+   {
+        hit = "1";
+   }
+   decompressStarted = "false";
    try {
     using(WebClient webClient = new WebClient()) {
 
@@ -31,6 +41,7 @@ namespace minerstat {
 
    } catch (Exception value) {
     Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
+    
    }
 
    return retVal;
@@ -42,13 +53,52 @@ namespace minerstat {
    bool flag = counter % 100 == 0;
    if (flag) {
    Program.NewMessage("DOWNLOAD => " + fileNameReal.ToUpper() + " (" + e.ProgressPercentage + " %  )", "INFO");
+                if (e.ProgressPercentage.Equals(100))
+                {
+                    if (hit.Equals("0"))
+                    {
+                        hit = "1";
+                        DecompressProtection();                       
+                    }
+                }
    Program.SyncStatus = false;
    }
 
   }
 
+        async internal static void DecompressProtection()
+        {
+           // await Task.Delay(5000);
+           // Program.NewMessage("DECOMPRESS => 15s threshold for health check.", "");
+            await Task.Delay(15000);
+            if (decompressStarted.Equals("false"))
+            {
+                try
+                {
+                    Program.NewMessage("DECOMPRESS => Failed. Autofix", "");
+                    // KILL ALL MINERS
+                    mining.killAll();
+                    // STOP TIMERS
+                    Program.watchDogs.Stop();
+                    Program.syncLoop.Stop();
+                    // DELETE BUGGED CLIENTS FOLDER
+                    await Task.Delay(2000);
+                    Directory.Delete("clients", true);
+                    // START MINING
+                    await Task.Delay(4000);
+                    Program.SyncStatus = false;
+                    Program.syncLoop.Stop();
+                    await Task.Delay(200);
+                    mining.Start();
+                }
+                catch (Exception) { } 
+            } else
+            {
+          //      Program.NewMessage("DECOMPRESS => Health check: OK!", "");
+            }
+        }
 
-        async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e) {
+            async private static void DoSomethingOnFinish(object sender, AsyncCompletedEventArgs e) {
 
    try {
 
@@ -62,7 +112,7 @@ namespace minerstat {
     mining.downloadConfig(Program.token, Program.worker);
     await Task.Delay(1000);
 
-                Program.NewMessage("NODE => Waiting for the first sync..", "INFO");
+                Program.NewMessage("NODE => Waiting for the next sync..", "INFO");
 
                 if (minerType.Equals("main"))
                 {
@@ -86,7 +136,7 @@ namespace minerstat {
             } catch (Exception) {
 
 
-   }
+            }
 
   }
 
@@ -101,8 +151,7 @@ namespace minerstat {
                new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
                 zipFile.ExtractAll(targetdir, ExtractExistingFileAction.OverwriteSilently);
             }
-
-        }
+  }
 
   private static string decompressFile() {
    Decompress(fileName.ToLower(), Directory.GetCurrentDirectory() + "/clients/" + fileNameReal.ToLower() + "/");
@@ -114,6 +163,7 @@ namespace minerstat {
             if (e.TotalBytesToTransfer > 0)
             {
                 Program.NewMessage("UNZIP => " + Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer) + "%", "");
+                decompressStarted = "true";
 
                 if (Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer) == 100)
                 {

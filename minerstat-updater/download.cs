@@ -99,7 +99,7 @@ namespace Launcher
                     {
                         try
                         {
-                            fileName.Extract(Program.currentDir + "/", ExtractExistingFileAction.DoNotOverwrite);
+                            fileName.Extract(Program.currentDir + "/", ExtractExistingFileAction.OverwriteSilently);
                         } catch (Exception) {  }
                     }
 

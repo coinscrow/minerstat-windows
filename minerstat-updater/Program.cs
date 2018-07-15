@@ -60,12 +60,7 @@ namespace Launcher
                 Console.WriteLine("ERROR => " + err.ToString());
                 try
                 {
-                    ProcessStartInfo Info = new ProcessStartInfo();
-                    Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start daemon.exe --verify e3546rfgre3t";
-                    Info.WindowStyle = ProcessWindowStyle.Hidden;
-                    Info.CreateNoWindow = true;
-                    Info.FileName = "cmd.exe";
-                    Process.Start(Info);
+                    reStart();
                 }
                 catch (Exception ex)
                 {
@@ -73,6 +68,17 @@ namespace Launcher
                 }
 
             }
+        }
+
+        async public static void reStart()
+        {
+            await Task.Delay(1500);
+            ProcessStartInfo Info = new ProcessStartInfo();
+            Info.Arguments = "/C choice /C Y /N /D Y /T 0 & start daemon.exe --verify e3546rfgre3t";
+            Info.WindowStyle = ProcessWindowStyle.Hidden;
+            Info.CreateNoWindow = true;
+            Info.FileName = "cmd.exe";
+            Process.Start(Info);
         }
 
         public class getData
