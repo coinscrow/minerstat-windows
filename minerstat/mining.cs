@@ -375,6 +375,10 @@ namespace minerstat
                 {
                     fileExtension = "pools.txt";
                 }
+                if (minerDefault.Contains("trex"))
+                {
+                    fileExtension = "config.json";
+                }
 
                 string folderPath = Program.currentDir + "/clients/" + minerDefault + "/" + fileExtension;
                 File.WriteAllText(@folderPath, minerConfig);

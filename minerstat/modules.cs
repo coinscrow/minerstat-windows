@@ -8,7 +8,9 @@ using System.Text;
 using System.Timers;
 using Newtonsoft.Json;
 using OpenHardwareMonitor.Hardware;
-
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace minerstat
 {
@@ -147,17 +149,22 @@ namespace minerstat
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable().Equals(true))
             {
-
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
+                try
                 {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    var host = Dns.GetHostEntry(Dns.GetHostName());
+                    foreach (var ip in host.AddressList)
                     {
-                        return ip.ToString();
+                        if (ip.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            return ip.ToString();
+                        }
                     }
+                    return "0.0.0.0";
+                    //throw new Exception("No network adapters with an IPv4 address in the system!");
+                } catch (Exception)
+                {
+                    return "0.0.0.0";
                 }
-                return "0.0.0.0";
-                //throw new Exception("No network adapters with an IPv4 address in the system!");
 
             }
             else
@@ -168,15 +175,21 @@ namespace minerstat
 
         public static long GetTotalFreeSpace(string driveName)
         {
-            free = 0;
-            foreach (DriveInfo d in allDrives)
+            try
             {
-                if (d.IsReady == true)
+                free = 0;
+                foreach (DriveInfo d in allDrives)
                 {
-                    free = free + d.TotalFreeSpace;
+                    if (d.IsReady == true)
+                    {
+                        free = free + d.TotalFreeSpace;
+                    }
                 }
+                return free;
+            } catch (Exception)
+            {
+                return 0;
             }
-            return free;
         }
 
         public static string GetUserIP()
@@ -224,16 +237,23 @@ namespace minerstat
             }
         }
 
-        public static bool IsReach()
+      async public static Task<Boolean> IsReach()
         {
             try
             {
-                modules.getData checkServer = new modules.getData("http://minerstat.farm/server.php", "POST", "");
+                var statusNumber = 0;
 
-                string res;
-                res = checkServer.GetResponse().ToString();
+                try
+                {
+                    HttpWebRequest webRequest = WebRequest.CreateHttp("http://italy.minerstat.com/server.php");
+                    HttpWebResponse webResponse = await webRequest.GetResponseAsync() as HttpWebResponse;
+                    statusNumber = (int)webResponse.StatusCode;
+                } catch (Exception)
+                {
+                    statusNumber = 500;
+                }
 
-                if (res.Contains("ok"))
+                if (statusNumber.Equals(200))
                 {
                     Program.connectionError = false;
                     return true;

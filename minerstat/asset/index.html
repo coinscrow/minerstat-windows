@@ -60,7 +60,7 @@
         <div class="main">
             <div class="left">
                 <div class="logo">
-                    <div class="version">v4.0.4</div>
+                    <div class="version">v4.0.5</div>
                 </div>
                 <div class="divider"></div>
                 <div id="mining_data" style="display:none;">
@@ -293,6 +293,9 @@
                                         $('.circle-loader').hide();
                                         $this.removeClass('disabled');
                                         $('.message_err').html(data.error).show();
+                                        if (autologin == true) {
+                                            doFrame.logOut();
+                                        }
                                     } else { // Success
                                         doFrame.setUser(token, worker);
 

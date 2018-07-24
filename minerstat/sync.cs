@@ -9,6 +9,7 @@ using System.Timers;
 using System.Net.Http;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 
 namespace minerstat
@@ -23,6 +24,11 @@ namespace minerstat
         private static readonly HttpClient client = new HttpClient();
         public static PerformanceCounter ramCounter;
 
+        [DllImport("user32")]
+        public static extern bool ExitWindowsEx(uint uFlags, uint dwReason);
+
+        [DllImport("user32")]
+        public static extern void LockWorkStation();
 
         async public static void loop(object sender, ElapsedEventArgs exw)
         {
@@ -62,6 +68,9 @@ namespace minerstat
                             case "xmr-stak":
                                 monitorURL = "http://127.0.0.1:2222/api.json";
                                 break;
+                            case "trex":
+                                monitorURL = "http://127.0.0.1:4068/summary";
+                                break;
                             case "bminer":
                                 monitorURL = "http://127.0.0.1:1880/api/status";
                                 break;
@@ -76,7 +85,7 @@ namespace minerstat
                         if (mining.minerDefault.ToLower().Contains("sgminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("ethminer")) { apiResponse = "skip"; }
-                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer"))
+                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex"))
                         {
 
                             string input;
@@ -230,8 +239,12 @@ namespace minerstat
                 mining.killAll();
                 Program.watchDogs.Stop();
                 Program.syncLoop.Stop();
+                Program.NewMessage("SYSTEM => REBOOT in 1 sec", "");
                 await Task.Delay(1000);
-                System.Diagnostics.Process.Start("shutdown.exe", "-r -f -t 0");
+                var psi = new ProcessStartInfo("shutdown", "/r /f /t 0");
+                psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                Process.Start(psi);
             }
 
             if (command.Equals("SHUTDOWN"))
@@ -239,8 +252,12 @@ namespace minerstat
                 mining.killAll();
                 Program.watchDogs.Stop();
                 Program.syncLoop.Stop();
+                Program.NewMessage("SYSTEM => SHUTDOWN in 1 sec", "");
                 await Task.Delay(1000);
-                System.Diagnostics.Process.Start("shutdown.exe", "-s -f -t 0");
+                var psi = new ProcessStartInfo("shutdown", "/s /f /t 0");
+                psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                Process.Start(psi);
             }
 
             if (command.Equals("DOWNLOADWATTS"))

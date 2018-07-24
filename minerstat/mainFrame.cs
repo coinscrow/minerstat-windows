@@ -32,7 +32,7 @@ namespace minerstat
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
-       
+
 
         public void dragMe()
         {
@@ -83,10 +83,10 @@ namespace minerstat
                     td.Principal.RunLevel = TaskRunLevel.Highest;
 
                     // Create a trigger that will fire at the end of the month, every month
-                    td.Triggers.Add(new LogonTrigger {});
+                    td.Triggers.Add(new LogonTrigger { });
 
                     // Create an action that will launch the program whenever the trigger fires
-                    td.Actions.Add(new ExecAction(programPath, "-verify startWithWindows", null));                  
+                    td.Actions.Add(new ExecAction(programPath, "-verify startWithWindows", null));
 
                     ts.RootFolder.RegisterTaskDefinition("minerstat-windows", td);
 
@@ -112,15 +112,15 @@ namespace minerstat
         }
 
         public Boolean getTask()
-        {          
+        {
             try
             {
                 if (TaskService.Instance.GetTask("minerstat-windows").ToString().Contains("minerstat-windows")) {
-                return true;
-            } else
-            {
-                return false;
-            }
+                    return true;
+                } else
+                {
+                    return false;
+                }
             }
             catch (Exception) { return false; }
 
@@ -162,7 +162,7 @@ namespace minerstat
         {
 
             removeTask();
-       
+
             if (File.Exists(Program.minerstatDir + "/user.json"))
             {
                 File.Delete((Program.minerstatDir + "/user.json"));
@@ -195,7 +195,7 @@ namespace minerstat
         public void miningStop()
         {
 
-        Program.NewMessage("USER => Mining stop", "INFO");
+            Program.NewMessage("USER => Mining stop", "INFO");
             // STOP TIMERS
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
@@ -209,15 +209,15 @@ namespace minerstat
         async public void miningStart()
         {
 
-        Program.SyncStatus = false;
-        Program.NewMessage("USER => Mining start", "INFO");
+            Program.SyncStatus = false;
+            Program.NewMessage("USER => Mining start", "INFO");
 
             Program.syncLoop.Stop();
             mining.killAll();
-        
 
-        await System.Threading.Tasks.Task.Delay(200);
-        mining.Start();
+
+            await System.Threading.Tasks.Task.Delay(200);
+            mining.Start();
             //Program.syncLoop.Start();
 
         }
@@ -290,34 +290,41 @@ namespace minerstat
             public string worker { get; set; }
         }
 
-        public void setUser(string Gtoken, string Gworker)
+        async public void setUser(string Gtoken, string Gworker)
         {
 
+            try {
 
-            if (!Directory.Exists(Program.minerstatDir))
-            {
-                Directory.CreateDirectory(Program.minerstatDir);
+                if (!Directory.Exists(Program.minerstatDir))
+                {
+                    Directory.CreateDirectory(Program.minerstatDir);
+                }
+
+                if (File.Exists(Program.minerstatDir + "/user.json"))
+                {
+                    File.Delete((Program.minerstatDir + "/user.json"));
+                }
+
+                loginUser loginUser = new loginUser
+                {
+                    token = Gtoken,
+                    worker = Gworker
+                };
+
+
+                File.WriteAllText(@Program.minerstatDir + "/user.json", JsonConvert.SerializeObject(loginUser));
+
+                await System.Threading.Tasks.Task.Delay(2500);
+
+                if (!File.Exists(Program.minerstatDir + "/user.json"))
+                {
+                    File.WriteAllText(@Program.minerstatDir + "/user.json", JsonConvert.SerializeObject(loginUser));
+                }
+
+            } catch (Exception) {
+            
             }
-
-            if (File.Exists(Program.minerstatDir + "/user.json"))
-            {
-                File.Delete((Program.minerstatDir + "/user.json"));
-            }
-
-            loginUser loginUser = new loginUser
-            {
-                token = Gtoken,
-                worker = Gworker
-            };
-
-
-            File.WriteAllText(@Program.minerstatDir + "/user.json", JsonConvert.SerializeObject(loginUser));
-
-
         }
 
-
-
-    }
-
+}
 }

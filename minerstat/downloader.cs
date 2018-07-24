@@ -76,6 +76,7 @@ namespace minerstat {
                 try
                 {
                     Program.NewMessage("DECOMPRESS => Failed. Autofix", "");
+                    Application.Restart();
                     // KILL ALL MINERS
                     mining.killAll();
                     // STOP TIMERS
