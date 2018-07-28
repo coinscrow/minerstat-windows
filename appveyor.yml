@@ -38,8 +38,6 @@ install:
 - copy minerstat.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
 - copy minerstat.exe.config C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
 - cd C:\projects\minerstat-windows\packages
-- copy vc_redist_2013.x86.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
-- copy vc_redist_2015.x86.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
 
 artifacts:
 - path: minerstat/bin/x86/Debug
