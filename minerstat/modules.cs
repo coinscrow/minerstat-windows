@@ -211,7 +211,7 @@ namespace minerstat
                 Ping myPing = new Ping();
                 String host = "minerstat.farm";
                 byte[] buffer = new byte[32];
-                int timeout = 2000;
+                int timeout = 8000;
                 PingOptions pingOptions = new PingOptions();
                 PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
                 if (reply.Status == IPStatus.Success)
