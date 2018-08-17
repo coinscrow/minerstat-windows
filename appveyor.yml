@@ -42,7 +42,7 @@ install:
 - cd C:\projects\minerstat-windows\mist
 - copy minerfix.reg C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
 - copy OhGodAnETHlargementPill-r2.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
-- copy OhGodAnETHlargementPill-r2.txt C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
+- copy OhGodAnETHlargementPill-r2-args.txt C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
 
 artifacts:
 - path: minerstat/bin/x86/Debug
