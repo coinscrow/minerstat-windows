@@ -325,7 +325,20 @@ namespace minerstat
                     // Start miner                     
                     Program.NewMessage("NODE => Waiting for the next sync..", "INFO");
 
+                    Program.SyncStatus = true;
+                    startMiner(true, false);
+
+                    // Start watchDog
+                    Program.watchDogs.Start();
+
+                    // Start Crash Protection
+                    //Program.crashLoop.Start();
+
+                    // Start SYNC & Remote Command
+                    Program.syncLoop.Start();
+
                     // ETHPILL
+                    await Task.Delay(1500);
                     try
                     {
                         if (minerType.ToLower().Equals("nvidia"))
@@ -351,30 +364,22 @@ namespace minerstat
                                     {
                                         pillArgs = File.ReadAllText(Program.currentDir + "/mist/OhGodAnETHlargementPill-r2-args.txt").Split(new[] { '\r', '\n' }).FirstOrDefault();
 
-                                    } catch (Exception) { pillArgs = "OhGodAnETHlargementPill-r2.exe"; }
+                                    }
+                                    catch (Exception) { pillArgs = "OhGodAnETHlargementPill-r2.exe"; }
 
 
                                     Process.Start("CMD.exe", "/c " + Program.currentDir + "/mist/" + pillArgs);
-                                    Program.NewMessage("ETHPill => Started in a new window", "INFO");
-                                } else
+                                    Program.NewMessage("ETHPill => Starting in a new window", "INFO");
+                                }
+                                else
                                 {
                                     Program.NewMessage("ETHPill => Already running", "INFO");
                                 }
                             }
                         }
-                    } catch (Exception) { }
+                    }
+                    catch (Exception) { }
 
-                    Program.SyncStatus = true;
-                    startMiner(true, false);
-
-                    // Start watchDog
-                    Program.watchDogs.Start();
-
-                    // Start Crash Protection
-                    //Program.crashLoop.Start();
-
-                    // Start SYNC & Remote Command
-                    Program.syncLoop.Start();
                 }                      
 
             }
