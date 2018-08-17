@@ -66,7 +66,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length != 0)
+            if (args.Length == 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
