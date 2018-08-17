@@ -386,6 +386,19 @@ namespace minerstat
             catch (Exception ex)
             {
                 Program.NewMessage(ex.ToString(), "");
+                if (ex.ToString().ToLower().Contains("json") || ex.ToString().ToLower().Contains("urlencoded"))
+                {
+                    Program.watchDogs.Stop();
+                    Program.syncLoop.Stop();
+                    Program.offlineLoop.Stop();
+                    mining.killAll();
+
+                    await Task.Delay(2000);
+
+                    Program.offlineLoop.Start();
+                    Start();
+
+                }
             }
 
         }
@@ -604,7 +617,7 @@ namespace minerstat
                     {
                         try
                         {
-                            Program.NewMessage("OVERCLOCK => " + JsonConvert.SerializeObject(jObject["overclock"]), "WARNING");
+                            Program.NewMessage("CLOCKTUNE => " + JsonConvert.SerializeObject(jObject["overclock"]), "WARNING");
                         } catch (Exception) { }
                         var mObject = Newtonsoft.Json.Linq.JObject.Parse(JsonConvert.SerializeObject(jObject["overclock"]));
                         var coreclock = (string)mObject["coreclock"];
