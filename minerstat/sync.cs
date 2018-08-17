@@ -74,18 +74,24 @@ namespace minerstat
                             case "bminer":
                                 monitorURL = "http://127.0.0.1:1880/api/status";
                                 break;
+                            case "lolminer":
+                                monitorURL = "http://127.0.0.1:3333";
+                                break;
+                            case "srbminer":
+                                monitorURL = "http://127.0.0.1:21555";
+                                break;
                         }
 
 
                         // 2) Fetch API's
-                        if (mining.minerDefault.ToLower().Contains("ccminer")) { modules.getStat(); }
+                        if (mining.minerDefault.ToLower().Contains("ccminer") || mining.minerDefault.ToLower().Contains("cryptodredge") || mining.minerDefault.ToLower().Contains("z-enemy")) { modules.getStat(); }
                         if (mining.minerDefault.ToLower().Contains("ewbf")) { modules.getStat_ewbf(); }
                         if (mining.minerDefault.ToLower().Contains("zm-zec")) { modules.getStat_zm(); }
                         if (mining.minerDefault.ToLower().Contains("phoenix-eth") || mining.minerDefault.ToLower().Contains("claymore")) { modules.getStat_claymore(); }
+                        if (mining.minerDefault.ToLower().Contains("ethminer")) { modules.getStat_ethminer(); }
                         if (mining.minerDefault.ToLower().Contains("sgminer")) { modules.getStat_sgminer(); }
                         if (mining.minerDefault.ToLower().Contains("gateless")) { modules.getStat_sgminer(); }
-                        if (mining.minerDefault.ToLower().Contains("ethminer")) { apiResponse = "skip"; }
-                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex"))
+                        if (mining.minerDefault.ToLower().Contains("cast-xmr") || mining.minerDefault.ToLower().Contains("xmr-stak") || mining.minerDefault.ToLower().Contains("bminer") || mining.minerDefault.ToLower().Contains("trex") || mining.minerDefault.ToLower().Contains("lolminer") || mining.minerDefault.ToLower().Contains("srbminer"))
                         {
 
                             string input;
@@ -146,8 +152,6 @@ namespace minerstat
 
                         // 4) POST
 
-                        if (!mining.minerDefault.ToLower().Contains("ethminer"))
-                        {
                             await Task.Delay(1000);
 
                             try
@@ -167,9 +171,9 @@ namespace minerstat
                                     ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
                                     ramCount = Convert.ToInt32(ramCounter.NextValue()).ToString();
                                 }
-                                catch (Exception ram) { }
+                                catch (Exception) { }
 
-                                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4.0.4&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
+                                var response = await client.PostAsync("https://api.minerstat.com/v2/set_node_config.php?token=" + Program.token + "&worker=" + Program.worker + "&miner=" + mining.minerDefault.ToLower() + "&ver=4.0.6&cpuu=" + mining.minerCpu + "&cpud=HASH" + "&os=win" + "&algo=&best=&space=" + modules.GetTotalFreeSpace("C") / 1000000 + "&freemem=" + ramCount + "&localip=" + modules.GetLocalIPAddress() + "&remoteip=" + modules.GetUserIP() + "&currentcpu=" + mining.cpuDefault.ToLower(), content);
                                 var responseString = await response.Content.ReadAsStringAsync();
 
                                 if (!responseString.Equals(""))
@@ -184,29 +188,14 @@ namespace minerstat
                                     int package = (apiHardware.Length + apiResponse.Length + apiCpu.Length) * sizeof(Char);
                                     modules.updateTraffic(package);
                                     Program.NewMessage("SYNC => API Updated [ ~ " + (package / 1000) + " KB ]", "INFO");
-                                } catch (Exception ex)
+                                } catch (Exception)
                                 {
                                     Program.NewMessage("SYNC => API Updated [ ~ 1 KB ]", "INFO");
                                     modules.updateTraffic(1);
                                 }
 
                             }
-                            catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }
-                        } else
-                        {
-
-                            // Only Remote Command Check
-                            modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
-                            string responseString = response.GetResponse();
-
-                            if (!responseString.Equals(""))
-                            {
-                                Program.NewMessage("REMOTE COMMAND => " + responseString, "");
-                                RemoteCommand(responseString);
-                            }
-
-                        }
-
+                            catch (Exception ex) { Program.NewMessage("ERROR => " + ex.ToString(), ""); }                       
 
                     }
 

@@ -1,6 +1,8 @@
 ﻿using CefSharp;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,11 +48,12 @@ namespace minerstat {
   public static Boolean connectionError;
   public static Nullable<bool> prevConnectionError;
 
-        // Timers
-        public static System.Timers.Timer watchDogs;
+  // Timers
+  public static System.Timers.Timer watchDogs;
   public static System.Timers.Timer syncLoop;
   public static System.Timers.Timer crashLoop;
   public static System.Timers.Timer offlineLoop;
+  public static System.Timers.Timer bufferProtection;
   public static Boolean SyncStatus;
 
   // Resources
@@ -63,7 +66,7 @@ namespace minerstat {
   [STAThread]
   static void Main(string[] args) {
 
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 MessageBox.Show("ERROR => Please, Start with minerstat.exe");
                 Application.Exit();
@@ -90,6 +93,17 @@ namespace minerstat {
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+
+                // Edit registry
+                // Disables Windows Error messages like: Ethdcrminer64 stopped working ..
+                // minerstat Watchdog will be able to restart the process without a notice
+                // NOTICE: if not works, Click on /misc/minerfix.reg
+                try
+                {
+                    var rk = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\Windows Error Reporting");
+                    rk.CreateSubKey("DontShowUI", RegistryKeyPermissionCheck.Default);
+                    rk.SetValue("DontShowUI", 1);
+                } catch (Exception) { }
 
                 // SET Global Varibles
                 //currentDir = System.Environment.CurrentDirectory;
@@ -126,6 +140,13 @@ namespace minerstat {
                 offlineLoop.AutoReset = true;
                 offlineLoop.Elapsed += new System.Timers.ElapsedEventHandler(offline.protect);
                 offlineLoop.Start();
+
+                // Buffer Protection
+                // Windows like to close the application on "long run" without Exception or any notice
+                bufferProtection = new System.Timers.Timer(TimeSpan.FromSeconds(14400).TotalMilliseconds); // set the time (4 hours in this case)
+                bufferProtection.AutoReset = true;
+                bufferProtection.Elapsed += new System.Timers.ElapsedEventHandler(buffer.Protection);
+                bufferProtection.Start();
 
                 // Check update folder
                 if (Directory.Exists(currentDir + "/update/"))

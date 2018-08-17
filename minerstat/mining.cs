@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MSI.Afterburner;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +29,13 @@ namespace minerstat
         private static string cpuVersion;
         private static WebClient wc = new WebClient();
         private static string github_version_file = "https://raw.githubusercontent.com/minerstat/minerstat-windows/master/versionStable.txt";
+        public static HardwareMonitor mahm = new HardwareMonitor();
+
+        // EXPLODE
+        public static string[] explode(string separator, string source)
+        {
+            return source.Split(new string[] { separator }, StringSplitOptions.None);
+        }
 
         public mining(Form1 mainForm)
         {
@@ -60,7 +68,115 @@ namespace minerstat
 
         }
 
-         public static Boolean CheckforUpdates()
+        public static string getCPUProcess()
+        {
+
+            string process = "unknown";
+
+            switch (mining.cpuDefault.ToLower())
+            {
+                case "xmr-stak-cpu":
+                    process = "xmr-stak-cpu";
+                    break;
+                case "cpuminer-opt":
+                    process = "cpuminer-celeron";
+                    break;
+                case "xmrig":
+                    process = "xmrig";
+                    break;
+            }
+
+            return process;
+
+        }
+
+        public static string getProcessName()
+        {
+            string process = "unknown";
+
+            switch (minerDefault.ToLower())
+            {
+                case "phoenix-eth":
+                    process = "phoenixminer";
+                    break;
+                case "claymore-neoscrypt":
+                    process = "neoscryptminer";
+                    break;
+                case "ccminer-tpruvot":
+                    process = "ccminer-80-x64";
+                    break;
+                case "cast-xmr":
+                    process = "cast_xmr-vega";
+                    break;
+                case "xmr-stak":
+                    process = "xmr-stak";
+                    break;
+                case "ccminer-alexis":
+                    process = "ccmineralexis78";
+                    break;
+                case "ccminer-x16r":
+                    process = "ccminer";
+                    break;
+                case "bminer":
+                    process = "bminer";
+                    break;
+                case "ccminer-krnlx":
+                    process = "ccminer";
+                    break;
+                case "ethminer":
+                    process = "ethminer";
+                    break;
+                case "claymore-xmr":
+                    process = "nsgpucnminer";
+                    break;
+                case "claymore-eth":
+                    process = "ethdcrminer64";
+                    break;
+                case "claymore-zec":
+                    process = "zecminer64";
+                    break;
+                case "optiminer-zec":
+                    process = "optiminer";
+                    break;
+                case "sgminer-pasc":
+                    process = "sgminer";
+                    break;
+                case "gatelessgate":
+                    process = "gatelessgate";
+                    break;
+                case "sgminer-gm":
+                    process = "sgminer";
+                    break;
+                case "ewbf-zec":
+                    process = "miner";
+                    break;
+                case "ewbf-zhash":
+                    process = "miner";
+                    break;
+                case "trex":
+                    process = "t-rex";
+                    break;
+                case "zm-zec":
+                    process = "zm";
+                    break;
+                case "z-enemy":
+                    process = "z-enemy";
+                    break;
+                case "cryptodredge":
+                    process = "cryptodredge";
+                    break;
+                case "lolminer":
+                    process = "lolminer";
+                    break;
+                case "srbminer":
+                    process = "srbminer-cn";
+                    break;
+            }
+
+            return process;
+        }
+
+        public static Boolean CheckforUpdates()
         {
                 try
                 {
@@ -142,6 +258,15 @@ namespace minerstat
                     Directory.CreateDirectory(@Program.currentDir + "/clients");
                 }
 
+                // Delete pending remote commands
+                modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
+                string responseString = response.GetResponse();
+
+                if (!responseString.Equals(""))
+                {
+                    Program.NewMessage("PENDING COMMAND REMOVED  => " + responseString, "");
+                }
+
                 modules.getData minersVersion = new modules.getData("https://static.minerstat.farm/miners/windows/version.json", "POST", "");
                 string version = minersVersion.GetResponse();
 
@@ -167,7 +292,7 @@ namespace minerstat
                     localMinerVersion = "0";
                 }
 
-                if (!File.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerUpdated.txt") || !localMinerVersion.Equals(minerVersion))
+                if (!File.Exists(Program.currentDir + "/clients/" + minerDefault.ToLower() + "/minerUpdated.txt") && !File.Exists(Program.minerstatDir + "/buffer.txt") || !localMinerVersion.Equals(minerVersion) && !File.Exists(Program.minerstatDir + "/buffer.txt"))
                 {
 
                     // DELETE ALL FILES
@@ -200,6 +325,45 @@ namespace minerstat
                     // Start miner                     
                     Program.NewMessage("NODE => Waiting for the next sync..", "INFO");
 
+                    // ETHPILL
+                    try
+                    {
+                        if (minerType.ToLower().Equals("nvidia"))
+                        {
+                            // Hardware Monitor
+                            // ONLY FOR: 1080, 1080Ti, Titan XP
+                            modules.getData hwQuery = new modules.getData("http://localhost:" + Program.monitorport + "/", "POST", "");
+                            string HardwareLog = hwQuery.GetResponse();
+
+                            if (HardwareLog.ToString().ToLower().Contains("1080") || HardwareLog.ToString().ToLower().Contains("1080 ti") || HardwareLog.ToString().ToLower().Contains("titan xp"))
+                            {
+                                Program.NewMessage("ETHPill => Compatible device(s) detected", "INFO");
+                                if (Process.GetProcessesByName("OhGodAnETHlargementPill-r2").Length == 0)
+                                {
+                                    // Does your ETHlargement not work as expected? You're likely running an older memory revision.
+                                    // With the use of --revA, you can specify which device should be fed our senior solution.If, for example, GPU 0, 3 and 4 aren't the young studs you thought they were, feed them with the following commands:
+                                    // OhGodAnETHlargementPill-r2.exe --revA 0,3,4 at ~/minerstat-windows/mist/OhGodAnETHlargementPill-r2-args.txt
+
+                                    //string pillPath = '"' + Program.currentDir + "/mist/" + '"';
+                                    string pillArgs = "OhGodAnETHlargementPill-r2.exe";
+
+                                    try
+                                    {
+                                        pillArgs = File.ReadAllText(Program.currentDir + "/mist/OhGodAnETHlargementPill-r2-args.txt").Split(new[] { '\r', '\n' }).FirstOrDefault();
+
+                                    } catch (Exception) { pillArgs = "OhGodAnETHlargementPill-r2.exe"; }
+
+
+                                    Process.Start("CMD.exe", "/c " + Program.currentDir + "/mist/" + pillArgs);
+                                    Program.NewMessage("ETHPill => Started in a new window", "INFO");
+                                } else
+                                {
+                                    Program.NewMessage("ETHPill => Already running", "INFO");
+                                }
+                            }
+                        }
+                    } catch (Exception) { }
+
                     Program.SyncStatus = true;
                     startMiner(true, false);
 
@@ -224,119 +388,139 @@ namespace minerstat
         async public static void startMiner(Boolean m1, Boolean m2)
         {
 
-            if (File.Exists(Program.currentDir + "/" + minerDefault.ToLower() + ".zip"))
+            if (!File.Exists(Program.minerstatDir + "/buffer.txt"))
             {
-                try
+
+
+                if (File.Exists(Program.currentDir + "/" + minerDefault.ToLower() + ".zip"))
                 {
-                    File.Delete(Program.currentDir + "/" + minerDefault.ToLower() + ".zip");
-                } catch (Exception) { Console.WriteLine("ERROR => File .zip removal error"); }
-            }
+                    try
+                    {
+                        File.Delete(Program.currentDir + "/" + minerDefault.ToLower() + ".zip");
+                    }
+                    catch (Exception) { Console.WriteLine("ERROR => File .zip removal error"); }
+                }
 
 
-            _instanceMainForm.Invoke((MethodInvoker)delegate {
-                _instanceMainForm.TopMost = true;
-            });
+                _instanceMainForm.Invoke((MethodInvoker)delegate
+                {
+                    _instanceMainForm.TopMost = true;
+                });
 
-
-            if (m1.Equals(true) && m2.Equals(false))
-            {
-                Program.watchDogs.Stop();
-                Program.syncLoop.Stop();
-                //Program.crashLoop.Stop();
-
-
-                if (minerCpu.Equals("True"))
+                if (Process.GetProcessesByName(mining.getProcessName()).Length == 0)
                 {
 
-                    if (!Directory.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/"))
+                    if (m1.Equals(true) && m2.Equals(false))
                     {
-                        Directory.CreateDirectory(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
-                    }
+                        Program.watchDogs.Stop();
+                        Program.syncLoop.Stop();
+                        //Program.crashLoop.Stop();
 
-                    string cpuMinerVersion;
 
-                    if (File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt"))
-                    {
-                        cpuMinerVersion = File.ReadAllText(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt");
-                    }
-                    else
-                    {
-                        cpuMinerVersion = "0";
-                    }
-
-                    if (!File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerUpdated.txt") || !cpuMinerVersion.Equals(cpuVersion))
-                    {
-
-                        // DELETE ALL FILES
-                        System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
-
-                        foreach (FileInfo file in di.GetFiles())
+                        if (minerCpu.Equals("True"))
                         {
-                            file.Delete();
-                        }
-                        foreach (DirectoryInfo dir in di.GetDirectories())
-                        {
-                            dir.Delete(true);
+
+                            if (!Directory.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/"))
+                            {
+                                Directory.CreateDirectory(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
+                            }
+
+                            string cpuMinerVersion;
+
+                            if (File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt"))
+                            {
+                                cpuMinerVersion = File.ReadAllText(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerVersion.txt");
+                            }
+                            else
+                            {
+                                cpuMinerVersion = "0";
+                            }
+
+                            if (!File.Exists(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/minerUpdated.txt") || !cpuMinerVersion.Equals(cpuVersion))
+                            {
+
+                                // DELETE ALL FILES
+                                System.IO.DirectoryInfo di = new DirectoryInfo(Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/");
+
+                                foreach (FileInfo file in di.GetFiles())
+                                {
+                                    file.Delete();
+                                }
+                                foreach (DirectoryInfo dir in di.GetDirectories())
+                                {
+                                    dir.Delete(true);
+                                }
+
+                                Downloader.minerVersion = cpuVersion;
+
+                                // DOWNLOAD FRESH PACKAGE
+                                Program.SyncStatus = false;
+                                Downloader.downloadFile(cpuDefault.ToLower() + ".zip", cpuDefault.ToLower(), "cpu");
+
+                            }
+                            else
+                            {
+                                await Task.Delay(1500);
+                                startMiner(false, true);
+                                Program.SyncStatus = true;
+                            }
+
                         }
 
-                        Downloader.minerVersion = cpuVersion;
+                        Program.watchDogs.Start();
+                        Program.syncLoop.Start();
+                        //Program.crashLoop.Start();
 
-                        // DOWNLOAD FRESH PACKAGE
-                        Program.SyncStatus = false;
-                        Downloader.downloadFile(cpuDefault.ToLower() + ".zip", cpuDefault.ToLower(), "cpu");
 
                     }
-                    else
+
+                    if (m1.Equals(true))
                     {
-                        await Task.Delay(1500);
-                        startMiner(false, true);
-                        Program.SyncStatus = true;
+                        string folderPath = '"' + Program.currentDir + "/clients/" + minerDefault.ToLower() + "/" + '"';
+                        Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./start.bat; pause");
                     }
 
                 }
 
-                Program.watchDogs.Start();
-                Program.syncLoop.Start();
-                //Program.crashLoop.Start();
-
-
-            }
-
-            if (m1.Equals(true))
-            {
-                string folderPath = '"' + Program.currentDir + "/clients/" + minerDefault.ToLower() + "/" + '"';
-                Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./start.bat; pause");              
-            }
-
-            if (minerCpu.Equals("True") && m2.Equals(true))
-            {
-                string folderPath = '"' + Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/" + '"';
-
-                switch (mining.cpuDefault.ToLower())
+                if (Process.GetProcessesByName(getCPUProcess()).Length == 0)
                 {
-                    case "xmr-stak-cpu":
-                        filePath = "xmr-stak-cpu.exe";
-                        break;
-                    case "cpuminer-opt":
-                        filePath = "start.bat";
-                        break;
-                    case "xmrig":
-                        filePath = "xmrig.exe";
-                        break;
-                }
 
-                Program.NewMessage(cpuDefault.ToUpper() + " => " + cpuConfig, "INFO");            
-                Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./" + filePath + ";");
+                    if (minerCpu.Equals("True") && m2.Equals(true))
+                    {
+                        string folderPath = '"' + Program.currentDir + "/clients/" + cpuDefault.ToLower() + "/" + '"';
+
+                        switch (mining.cpuDefault.ToLower())
+                        {
+                            case "xmr-stak-cpu":
+                                filePath = "xmr-stak-cpu.exe";
+                                break;
+                            case "cpuminer-opt":
+                                filePath = "start.bat";
+                                break;
+                            case "xmrig":
+                                filePath = "xmrig.exe";
+                                break;
+                        }
+
+                        Program.NewMessage(cpuDefault.ToUpper() + " => " + cpuConfig, "INFO");
+                        Process.Start("C:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe ", @"set-location '" + folderPath + "'; " + "./" + filePath + ";");
+
+                    }
+                }
+                await Task.Delay(2000);
+
+                Program.SyncStatus = true;
+
+                _instanceMainForm.Invoke((MethodInvoker)delegate
+                {
+                    _instanceMainForm.TopMost = false;
+                });
 
             }
-
-            await Task.Delay(2000);
-
-            Program.SyncStatus = true;
-
-            _instanceMainForm.Invoke((MethodInvoker)delegate {
-                _instanceMainForm.TopMost = false;
-            });
+            else
+            {
+                File.Delete(@Program.minerstatDir + "/buffer.txt");
+            }
 
         }
 
@@ -379,6 +563,10 @@ namespace minerstat
                 {
                     fileExtension = "config.json";
                 }
+                if (minerDefault.Contains("lolminer"))
+                {
+                    fileExtension = "user_config.json";
+                }                
 
                 string folderPath = Program.currentDir + "/clients/" + minerDefault + "/" + fileExtension;
                 File.WriteAllText(@folderPath, minerConfig);
@@ -418,25 +606,44 @@ namespace minerstat
                         var memoryclock = (string)mObject["memoryclock"];
                         var powerlimit = (string)mObject["powerlimit"];
                         var fan = (string)mObject["fan"];
-                        if (coreclock.Equals("skip")) { coreclock = "9999"; }
-                        if (memoryclock.Equals("skip")) { memoryclock = "9999"; }
-                        if (powerlimit.Equals("skip")) { powerlimit = "9999"; }
-                        if (fan.Equals("skip")) { fan = "9999"; }
-                        clocktune.Manual(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock));
+
+                        if (coreclock.Contains(" ") || memoryclock.Contains(" ") || powerlimit.Contains(" ") || fan.Contains(" "))
+                        {
+                            string[] coreArray = explode(" ", coreclock);
+                            string[] memoryArray = explode(" ", memoryclock);
+                            string[] fanArray = explode(" ", fan);
+                            string[] powerArray = explode(" ", powerlimit);
+
+                            for (int i = 0; i < mahm.Header.GpuEntryCount; i++)
+                            {
+                                coreclock = coreArray[i];
+                                memoryclock = memoryArray[i];
+                                powerlimit = powerArray[i];
+                                fan = fanArray[i];
+
+                                if (coreclock.Equals("skip")) { coreclock = "9999"; }
+                                if (memoryclock.Equals("skip")) { memoryclock = "9999"; }
+                                if (powerlimit.Equals("skip")) { powerlimit = "9999"; }
+                                if (fan.Equals("skip")) { fan = "9999"; }
+
+                                clocktune.Advanced(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock), i);
+                            }
+
+                        } else
+                        {
+                            if (coreclock.Equals("skip")) { coreclock = "9999"; }
+                            if (memoryclock.Equals("skip")) { memoryclock = "9999"; }
+                            if (powerlimit.Equals("skip")) { powerlimit = "9999"; }
+                            if (fan.Equals("skip")) { fan = "9999"; }
+                            clocktune.Manual(minerType, Convert.ToInt32(powerlimit), Convert.ToInt32(coreclock), Convert.ToInt32(fan), Convert.ToInt32(memoryclock));
+                        }
+                      
                     } else
                     {
-                        Program.NewMessage("WARNING => Install MSI Afterburner to enable overclocking" , "WARNING");
+                        Program.NewMessage("WARNING => MSIAfterburner.exe is not running..", "INFO");
+                        Program.NewMessage("WARNING => Install & Run - MSI Afterburner to enable overclocking" , "WARNING");
                     }
 
-                }
-
-                // Delete pending remote commands
-                modules.getData response = new modules.getData("https://api.minerstat.com/v2/get_command_only.php?token=" + Program.token + "&worker=" + Program.worker, "POST", "");
-                string responseString = response.GetResponse();
-
-                if (!responseString.Equals(""))
-                {
-                    Program.NewMessage("PENDING COMMAND REMOVED  => " + responseString, "");
                 }
 
             }

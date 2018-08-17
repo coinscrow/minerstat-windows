@@ -127,6 +127,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="buffer.cs" />
     <Compile Include="CefLibraryHandle.cs" />
     <Compile Include="clocktune.cs" />
     <Compile Include="downloader.cs" />

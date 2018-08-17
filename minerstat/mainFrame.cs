@@ -185,6 +185,7 @@ namespace minerstat
             Program.watchDogs.Stop();
             Program.syncLoop.Stop();
             //Program.crashLoop.Stop();
+            Program.offlineLoop.Stop();
 
             // AUTO UPDATE IF AVAILABLE
 
@@ -201,6 +202,7 @@ namespace minerstat
             Program.syncLoop.Stop();
             //Program.crashLoop.Stop();
             //Program.crashLoop.Stop();
+            Program.offlineLoop.Stop();
 
             mining.killAll();
 
@@ -212,10 +214,13 @@ namespace minerstat
             Program.SyncStatus = false;
             Program.NewMessage("USER => Mining start", "INFO");
 
-            Program.syncLoop.Stop();
-            mining.killAll();
+            if (!File.Exists(Program.minerstatDir + "/buffer.txt"))
+            {
+                Program.syncLoop.Stop();
+                mining.killAll();
+            }
 
-
+            Program.offlineLoop.Start();
             await System.Threading.Tasks.Task.Delay(200);
             mining.Start();
             //Program.syncLoop.Start();

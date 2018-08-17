@@ -37,19 +37,30 @@ namespace minerstat
 
                 if (!powerlimit.Equals(9999))
                 {
-                    macm.GpuEntries[i].PowerLimitCur = powerlimit;
+                    try {
+                        macm.GpuEntries[i].PowerLimitCur = powerlimit;
+                    } catch (Exception powerIssue) { Console.WriteLine(powerIssue.ToString()); }
+
                 }
 
                 if (gpuType.Equals("nvidia"))
                 {
                     if (!coreclock.Equals(9999))
                     {
-                        macm.GpuEntries[i].CoreClockBoostCur = coreclock * 1000;
+                        try
+                        {
+                            macm.GpuEntries[i].CoreClockBoostCur = coreclock * 1000;
+                        }
+                        catch (Exception coreIssue) { Program.NewMessage(coreIssue.ToString(), ""); }
                     }
 
                     if (!memoryclock.Equals(9999))
                     {
-                        macm.GpuEntries[i].MemoryClockBoostCur = memoryclock * 1000;
+                        try
+                        {
+                            macm.GpuEntries[i].MemoryClockBoostCur = memoryclock * 1000;
+                        }
+                        catch (Exception memoryIssue) { Console.WriteLine(memoryIssue.ToString()); }
                     }
                 }
 
@@ -57,151 +68,119 @@ namespace minerstat
                 {
                     if (!coreclock.Equals(9999))
                     {
-                        macm.GpuEntries[i].CoreClockCur = Convert.ToUInt32(coreclock * 1000);
+                        try
+                        {
+                            macm.GpuEntries[i].CoreClockCur = Convert.ToUInt32(coreclock * 1000);
+                        }
+                        catch (Exception coreIssue) { Program.NewMessage(coreIssue.ToString(), ""); }
                     }
                     if (!memoryclock.Equals(9999))
                     {
-                        macm.GpuEntries[i].MemoryClockCur = Convert.ToUInt32(memoryclock * 1000);
-
+                        try
+                        {
+                            macm.GpuEntries[i].MemoryClockCur = Convert.ToUInt32(memoryclock * 1000);
+                        }
+                        catch (Exception memoryIssue) { Console.WriteLine(memoryIssue.ToString()); }
                     }
                 }
 
+                try
+                {
+                    // APPLY AFTERBURNER CHANGES
+                    macm.CommitChanges();
+                    System.Threading.Thread.Sleep(2000);
+                    macm.ReloadAll();
+                } catch (Exception applySettings)
+                {
+                   // Program.NewMessage("" + applySettings.ToString(), "");
+                }
 
-                // APPLY AFTERBURNER CHANGES
-                macm.CommitChanges();
-                System.Threading.Thread.Sleep(2000);
-                macm.ReloadAll();
             }
 
         }
 
 
-        public static void AutoDrive()
+        public static void Advanced(string gpuType, int powerlimit, int coreclock, int fan, int memoryclock, int gpuid)
         {
-
-            try
-            {
-     
-                algoType = "default";
-
-                switch (mining.minerDefault.ToLower())
+    
+                if (!fan.Equals(9999))
                 {
-                    case "phoenix-eth":
-                        algoType = "memory";
-                        break;
-                    case "claymore-neoscrypt":
-                        algoType = "power50";
-                        break;
-                    case "cast-xmr":
-                        algoType = "memory";
-                        break;
-                    case "xmr-stak":
-                        algoType = "memory";
-                        break;
-                    case "ethminer":
-                        algoType = "memory";
-                        break;
-                    case "claymore-xmr":
-                        algoType = "memory";
-                        break;
-                    case "claymore-zec":
-                        algoType = "core";
-                        break;
-                    case "optiminer-zec":
-                        algoType = "core";
-                        break;
-                    case "sgminer-pasc":
-                        algoType = "memory";
-                        break;
-                    case "ewbf-zec":
-                        algoType = "core";
-                        break;
-                    case "ewbf-zhash":
-                        algoType = "core";
-                        break;
-                    case "zm-zec":
-                        algoType = "core";
-                        break;
-                }
-
-                for (int i = 0; i < mahm.Header.GpuEntryCount; i++)
-                {
-
-                    int memoryMin, memoryMax, coreMin, coreMax, powerMin, powerMax, riseVal;
-                    memoryBoost = 0; coreBoost = 0; powerLimit = 100; fanSpeed = 70; riseVal = 0;
-
-                    if (mahm.GpuEntries[i].ToString().Contains("TITAN")) { riseVal = 20; }
-                    if (mahm.GpuEntries[i].ToString().Contains("GTX 1080")) { riseVal = 110; }
-                    if (mahm.GpuEntries[i].ToString().Contains("GTX 1080 Ti")) { riseVal = 0; }
-                    if (mahm.GpuEntries[i].ToString().Contains("GTX 1070")) { riseVal = 40; }
-                    if (mahm.GpuEntries[i].ToString().Contains("GTX 1060")) { riseVal = 40; }
-                    if (mahm.GpuEntries[i].ToString().Contains("GTX 1050")) { riseVal = 43; }
-
-                    memoryMin = macm.GpuEntries[i].MemoryClockBoostMin + (riseVal * 1000);
-                    memoryMax = macm.GpuEntries[i].MemoryClockBoostMax + (riseVal * 1000);
-                    coreMin = macm.GpuEntries[i].CoreClockBoostMin + (riseVal * 1000);
-                    coreMax = macm.GpuEntries[i].CoreClockBoostMax + (riseVal * 1000);
-                    powerMin = macm.GpuEntries[i].PowerLimitMin;
-                    powerMax = macm.GpuEntries[i].PowerLimitMax;                   
-
-                    switch (algoType)
-                    {
-                        case "default":
-                            memoryBoost = (memoryMax - (memoryMax * 0.3));
-                            coreBoost = (coreMax - (coreMax * 0.3));
-                            powerLimit = (powerMin + (powerMax * 0.23));
-                            fanSpeed = 75;
-                            break;
-                        case "core":
-                            memoryBoost = (memoryMax - (memoryMax * 0.9));
-                            coreBoost = (coreMax - (coreMax * 0.25));
-                            powerLimit = (powerMin + (powerMax * 0.20));
-                            fanSpeed = 75;
-                            break;
-                        case "memory":
-                            memoryBoost = (memoryMax - (memoryMax * 0.25));
-                            coreBoost = (coreMax - (coreMax * 0.8));
-                            powerLimit = (powerMin + (powerMax * 0.23));
-                            fanSpeed = 75;
-                            break;
-                        case "power50":
-                            memoryBoost = 0;
-                            coreBoost = 0;
-                            powerLimit = (powerMin + (powerMax * 0));
-                            fanSpeed = 80;
-                            break;
-                    }
-
-
 
                     try
                     {
-                        macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fanSpeed);
+                        macm.GpuEntries[gpuid].FanSpeedCur = Convert.ToUInt32(fan);
                     }
                     catch (Exception ex)
                     {
-                        macm.GpuEntries[i].FanFlagsCur = MACM_SHARED_MEMORY_GPU_ENTRY_FAN_FLAG.None;
-                        macm.GpuEntries[i].FanSpeedCur = Convert.ToUInt32(fanSpeed);
+                        macm.GpuEntries[gpuid].FanFlagsCur = MACM_SHARED_MEMORY_GPU_ENTRY_FAN_FLAG.None;
+                        macm.GpuEntries[gpuid].FanSpeedCur = Convert.ToUInt32(fan);
                     }
+                }
 
-                    macm.GpuEntries[i].PowerLimitCur = (int)powerLimit;
-                    macm.GpuEntries[i].CoreClockBoostCur = (int)Math.Ceiling(coreBoost / 10);
-                    macm.GpuEntries[i].MemoryClockBoostCur = (int)Math.Ceiling(memoryBoost / 10);
+                if (!powerlimit.Equals(9999))
+                {
+                    try
+                    {
+                        macm.GpuEntries[gpuid].PowerLimitCur = powerlimit;
+                    }
+                    catch (Exception powerIssue) { Console.WriteLine(powerIssue.ToString()); }
 
                 }
 
-                // APPLY AFTERBURNER CHANGES
-                macm.CommitChanges();
-                System.Threading.Thread.Sleep(2000);
-                macm.ReloadAll();
+                if (gpuType.Equals("nvidia"))
+                {
+                    if (!coreclock.Equals(9999))
+                    {
+                        try
+                        {
+                            macm.GpuEntries[gpuid].CoreClockBoostCur = coreclock * 1000;
+                        }
+                        catch (Exception coreIssue) { Program.NewMessage(coreIssue.ToString(), ""); }
+                    }
 
-            } catch (Exception err)
-            {
-                Program.NewMessage(err.ToString(), "");
-            }
+                    if (!memoryclock.Equals(9999))
+                    {
+                        try
+                        {
+                            macm.GpuEntries[gpuid].MemoryClockBoostCur = memoryclock * 1000;
+                        }
+                        catch (Exception memoryIssue) { Console.WriteLine(memoryIssue.ToString()); }
+                    }
+                }
+
+                if (gpuType.Equals("amd"))
+                {
+                    if (!coreclock.Equals(9999))
+                    {
+                        try
+                        {
+                            macm.GpuEntries[gpuid].CoreClockCur = Convert.ToUInt32(coreclock * 1000);
+                        }
+                        catch (Exception coreIssue) { Program.NewMessage(coreIssue.ToString(), ""); }
+                    }
+                    if (!memoryclock.Equals(9999))
+                    {
+                        try
+                        {
+                            macm.GpuEntries[gpuid].MemoryClockCur = Convert.ToUInt32(memoryclock * 1000);
+                        }
+                        catch (Exception memoryIssue) { Console.WriteLine(memoryIssue.ToString()); }
+                    }
+                }
+
+                try
+                {
+                    // APPLY AFTERBURNER CHANGES
+                    macm.CommitChanges();
+                    System.Threading.Thread.Sleep(2000);
+                    macm.ReloadAll();
+                }
+                catch (Exception)
+                {
+                    // Program.NewMessage("" + applySettings.ToString(), "");
+                }
 
         }
-
 
     }
 }

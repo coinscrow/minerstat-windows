@@ -211,7 +211,7 @@ namespace minerstat
                 Ping myPing = new Ping();
                 String host = "minerstat.farm";
                 byte[] buffer = new byte[32];
-                int timeout = 8000;
+                int timeout = 15000;
                 PingOptions pingOptions = new PingOptions();
                 PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
                 if (reply.Status == IPStatus.Success)
@@ -395,6 +395,30 @@ namespace minerstat
             return result;
         }
 
+
+        internal static bool getStat_ethminer()
+        {
+            bool result = false;
+            try
+            {
+                TcpClient tcpClient = new TcpClient("127.0.0.1", Int32.Parse("3333"));
+
+                Stream stream = tcpClient.GetStream();
+                StreamReader streamReader = new StreamReader(stream);
+                byte[] bytes = Encoding.ASCII.GetBytes("{\"id\":0, \"jsonrpc\":\"2.0\", \"method\":\"miner_getstat1\"}\n");
+                stream.Write(bytes, 0, bytes.Length);
+                string res = streamReader.ReadLine();
+                sync.apiResponse = res;
+                stream.Close();
+                result = true;
+            }
+            catch (Exception value)
+            {
+                Program.NewMessage("WATCHDOG: Claymore not started ?!", "ERROR");
+                Program.NewMessage(value.ToString().Substring(0, 42) + "...", "ERROR");
+            }
+            return result;
+        }
 
 
         internal static bool getStat_zm()
