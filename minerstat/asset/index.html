@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+<html lang="en"><head>
+	<title>minerstat - crypto mining monitor & management software</title>
+	<meta name="description" content="Minerstat is number-one tool to monitor and manage your crypto mining operation of any size. Includes auto-profit switching and Watchdog swift system alerting.">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="style/style-light.css"/>
+</head>
+<body>
+    <div class="preloader"></div>
+
+
+
+    </div>
+    <div id="frame">
+        <div class="empty" style="display:block;">
+            <div class="logo"></div>
+            <div class="icons">
+                <a onclick="doFrame.openURL('https://minerstat.com/help');" data-tooltip="Help" class="icon help"></a>
+                <a onclick="doFrame.openURL('https://my.minerstat.com');" data-tooltip="Dashboard" class="icon dashboard"></a>
+                <div onclick="doFrame.minApp();" data-tooltip="Minimize" class="icon minimize"></div>
+                <div onclick="doFrame.closeApp();" data-tooltip="Close" class="icon close"></div>
+            </div>
+            <div class="box">
+                <div class="row">
+                    <div class="col_1_2">
+                        <label>Access Key</label>
+                        <input id="key" type="text">
+                    </div>
+                    <div class="col_1_2">
+                        <label>Worker name</label>
+                        <input id="worker" type="text" value="">
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="message_err"></div>
+                <div class="row">
+                    <div class="checkgroup">
+                        <div class="check"></div><label>Start with Windows</label>
+                    </div>
+                    <div class="circle-loader">
+                        <div class="checkmark draw"></div>
+                    </div>
+                    <div id="loginButton" class="button green">Log in</div>
+                </div>
+                <input id="nonce" value="" type="hidden">
+            </div>
+            <div class="row_small">
+                <div class="links_left">
+                    <a onclick="doFrame.openURL('https://minerstat.com/terms');">Terms</a> <a onclick="doFrame.openURL('https://minerstat.com/privacy');">Privacy</a>
+                </div>
+                <div class="links_right">
+                    <a onclick="doFrame.openURL('https://my.minerstat.com/register');">Register new account</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="left">
+                <div class="logo">
+                    <div class="version">v4.0.7</div>
+                </div>
+                <div class="divider"></div>
+                <div id="mining_data" style="display:none;">
+                    <div class="row">
+                        <div class="icon hashrate"></div>
+                        <div class="text">
+                            <div id="mining"><b>-</b><small></small></div>
+                            <div id="dual_mining"><b></b><small></small></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="icon earnings"></div>
+                        <div class="text">
+                            <b id="earnings">-</b>
+                            <small>daily earnings</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="icon temp"></div>
+                        <div class="text">
+                            <b id="temp_fan">-</b>
+                            <small>max. temp & fans</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row fixed_bottom">
+                    <div id="start" onclick="" class="button disabled green"><div class="icon start"></div>Start mining</div>
+                    <div id="stop" onclick="" class="button disabled red" style="display:none;"><div class="icon stop"></div>Stop mining</div>
+                    <div onclick="doFrame.restartApp();" class="restart">Restart/Update</div>
+                </div>
+            </div>
+            <div class="right">
+                <div id="icons">
+                    <a onclick="doFrame.openURL('https://minerstat.com/help');" data-tooltip="Help" class="icon help"></a>
+                    <a onclick="doFrame.openURL('https://my.minerstat.com/worker/' + doFrame.getWorker());" data-tooltip="Dashboard" class="icon dashboard"></a>
+                    <div onclick="doFrame.logOut();" data-tooltip="Logout" class="icon logout"></div>
+                    <div onclick="doFrame.minApp();" data-tooltip="Minimize" class="icon minimize"></div>
+                    <div onclick="doFrame.closeApp();" data-tooltip="Close" class="icon close"></div>
+                </div>
+                <div class="code">
+                    <div class="layer1"></div><div class="layer2"></div><div class="layer3"></div><div class="layer4"></div>
+                    <code id="msField"></code>
+                </div>
+                <div class="status_bar">
+                    <div class="element"><div class="icon ip"></div><span id="ip">0.0.0.0</span></div>
+                    <div class="element"><div class="icon byte"></div><span id="byte">0 &nbsp;byte</span></div>
+                    <div class="element error" id="error"><div id="error_text" class="icon error"></div>Error</div>
+                </div>
+            </div>
+        </div>
+        <script src="jquery.min.js"></script>
+        <script src="fastclick.js"></script>
+        <script>
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            function parseJSON(data) {
+                return window.JSON && window.JSON.parse ? window.JSON.parse(data) : (new Function("return " + data))();
+            }
+
+            function firstToUpperCase(str) {
+                return str.substr(0, 1).toUpperCase() + str.substr(1);
+            }
+
+            function seconds_to_hours(seconds) { // day, h, m and s
+                var days = Math.floor(seconds / (24 * 60 * 60));
+                seconds -= days * (24 * 60 * 60);
+                var hours = Math.floor(seconds / (60 * 60));
+                seconds -= hours * (60 * 60);
+                var minutes = Math.floor(seconds / (60));
+                seconds -= minutes * (60);
+                return ((0 < days) ? (days + " d, ") : "") + hours + "h, " + minutes + "min";
+            }
+
+            $(function () {
+
+                $("#frame").mousemove(function (event) { doFrame.dragMe(); });
+                FastClick.attach(document.body);
+
+                var autologin = false;
+                var justStart = true;
+                var justStartCount = 0;
+
+                // SHOW DEVELOPER TOOLS
+                //doFrame.showDevTools();
+
+                // START WITH WINDOWS
+                var isTask = doFrame.getTask();
+                if (isTask == true) {
+                    $('.checkgroup').children('.check').toggleClass('selected');
+                }
+
+                // CHECK CONNECTION BEFORE START
+                if (doFrame.netCheck() === true) {
+                    doFrame.newMessage("NODE => Connecton: OK!", "INFO");
+
+                    loaded();
+
+                } else {
+
+                    async function netCheck() {
+
+                        $('#mining_data').show();
+                        $('.empty').fadeOut();
+
+                        $('.button.green').hide();
+                        $('.button.red').hide();
+
+                        doFrame.newMessage("NODE => Waiting for connection..", "INFO");
+
+                        if (doFrame.netCheck() === false) {
+                            await setTimeout(netCheck, 2000);
+                        } else {
+                            loaded();
+                        }
+
+                    }
+
+                    netCheck();
+
+                }
+
+                // CONNECTION => OK (START)
+                function loaded() {
+
+                    var login = doFrame.getUser();
+
+
+                    if (login != null) {
+
+                        var obj = parseJSON(login);
+
+                        var loginToken = obj["token"];
+                        var loginWorker = obj["worker"];
+
+                        var autologin = true;
+                        loginNow();
+
+                        async function loginNow() {
+                            document.getElementById("key").value = loginToken;
+                            document.getElementById("worker").value = loginWorker;
+                            //document.getElementById('loginButton').click();
+                            await sleep(1000);
+                            $(".preloader").hide();
+                            $("#loginButton").click();
+
+                            $('.button.red').show();
+                            $('.button.green').hide();
+
+                            doFrame.miningStart();
+
+                        }
+
+                    } else {
+                        $(".preloader").hide();
+                        autologin = false;
+                    }
+
+
+                    var startOnWindows = 0;
+
+                    // Checkbox
+                    $('.checkgroup').click(function () {
+                        $(this).children('.check').toggleClass('selected');
+                        startOnWindows = Math.abs(startOnWindows - 1);
+                    });
+
+                    // REFRESH MINERSTAT CONSOLE every 1 SEC
+                    msDisplay = setInterval(function () {
+
+                        var display = doFrame.getDisplay();
+                        var traffic = doFrame.getTraffic();
+                        var sync = doFrame.getSyncStatus();
+                        document.getElementById("msField").innerHTML = display;
+                        document.getElementById("byte").innerHTML = traffic;
+
+                        if (sync == true && justStart == false) {
+                            // IF DOWNLOAD PROGRESS IS READY
+                            $("#start").removeClass("disabled");
+                            $("#stop").removeClass("disabled");
+                            $("#start").attr("onclick", "doFrame.miningStart(); $('.button.green').hide(); $('.button.red').show();  $('#start').addClass('disabled'); $('#stop').addClass('disabled'); $('#start').attr('onclick', ''); $('#stop').attr('onclick', '');");
+                            $("#stop").attr("onclick", "doFrame.miningStop(); $('.button.red').hide(); $('.button.green').show();");
+                        } else {
+                            // IF DO#WNLOAD PROGRESS IS STILL RUNNING
+                            $("#start").addClass("disabled");
+                            $("#stop").addClass("disabled");
+                            $("#start").attr("onclick", "");
+                            $("#stop").attr("onclick", "");
+                            if (justStart == true) {
+                                if (justStartCount > 65) {
+                                    justStart = false;
+                                } else {
+                                    justStartCount++;
+                                }
+                            }
+                        }
+
+
+                    }, 100);
+
+
+                    // Click on Save & Login button
+                    $('#loginButton').on('click', function () {
+                        var $this = $(this);
+                        var token = $('#key').val();
+                        var worker = $('#worker').val();
+
+                        $('#start').addClass('disabled'); $('#stop').addClass('disabled'); $('#start').attr('onclick', ''); $('#stop').attr('onclick', '');
+
+                        if ($this.hasClass('disabled') || token == '' || worker == '') {
+                            return false;
+                        }
+
+                        $this.addClass('disabled');
+                        $('.circle-loader').show();
+
+                        UXStart();
+
+                        msUXUpdate = setInterval(function () { UXStart(); }, 180000);
+
+                        function UXStart() {
+
+                            try {
+
+                                // Call the right location for login
+                                $.getJSON("https://api.minerstat.com/v2/stats/" + token + "/" + worker, function (data) {
+                                    if (typeof data.error !== 'undefined' && data.error != '') {
+                                        $('.circle-loader').hide();
+                                        $this.removeClass('disabled');
+                                        $('.message_err').html(data.error).show();
+                                        if (autologin == true) {
+                                            doFrame.logOut();
+                                        }
+                                    } else { // Success
+                                        doFrame.setUser(token, worker);
+
+                                        // START WITH WINDOWS ??
+                                        if (autologin == false) {
+                                            if (startOnWindows == 1) {
+                                                doFrame.setTask();
+                                            } else {
+                                                doFrame.removeTask();
+                                            }
+                                        }
+
+                                        workerData = data["" + worker.toUpperCase() + ""];
+                                        $('.circle-loader').addClass('load-complete');
+                                        $('.checkmark').show();
+                                        doFrame.setSyncStatus(true);
+                                        setTimeout(() => {
+
+                                            // if (data.includes("online")) {
+                                            //this string contained stream
+
+                                            $('#mining_data').show();
+                                            $('#ip').html(doFrame.getIP());
+
+
+                                            //if (workerData.info.status == 'online') {
+                                            if (data != '' && workerData.info.status == 'online') {
+
+                                                $('#mining > b').html(workerData.mining.hashrate.hashrate + " " + workerData.mining.hashrate.hashrate_unit);
+                                                $('#mining > small').html(workerData.mining.crypto);
+                                                if (workerData.mining.crypto_dual != '') {
+                                                    $('#dual_mining > b').html(workerData.mining.hashrate.hashrate_dual + " " + workerData.mining.hashrate.hashrate_unit_dual);
+                                                    $('#dual_mining > small').html(workerData.mining.crypto_dual);
+                                                }
+                                                $('#earnings').html(workerData.revenue.usd_day);
+
+                                                // Calculate max. temp & fan
+                                                var maxTemp = 0;
+                                                var maxFan = 0;
+                                                $.each(workerData.hardware, function (i, h) {
+                                                    if (maxTemp < h.temp) {
+                                                        maxTemp = h.temp;
+                                                    }
+                                                    if (maxFan < h.fan) {
+                                                        maxFan = h.fan;
+                                                    }
+                                                });
+
+                                                $('#temp_fan').html(maxTemp + '°C, ' + maxFan + '%');
+
+
+                                            } else {
+
+                                            }
+                                            //} else {
+                                            //    $('#mining_data').show();
+                                            //    $('#ip').html(doFrame.getIP());
+                                            // }
+                                            $('.empty').fadeOut();
+                                        }, 1000);
+                                    }
+                                });
+                            } catch (err) {
+                                UXStart();
+                            }
+                        }
+
+                    });
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

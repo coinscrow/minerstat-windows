@@ -1,0 +1,62 @@
+image:
+- Visual Studio 2017
+
+configuration:
+- Debug
+platform: x86
+
+# Install scripts.
+install:
+- nuget restore minerstat.sln
+- msbuild minerstat.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- cd minerstat/bin/x86
+- xcopy Debug "Debug/resources" /i
+- xcopy "Debug/locales" "Debug/resources/locales" /i
+- xcopy "Debug/swiftshader" "Debug/resources/swiftshader" /i
+- rmdir /Q /S "Debug/locales"
+- rmdir /Q /S "Debug/swiftshader"
+- attrib +r Debug/resources/*
+- attrib +r Debug/asset/*
+- attrib +r Debug/resources/locales/*
+- attrib +r Debug/resources/swiftshader/*
+- attrib +r Debug/daemon.exe
+- attrib -r Debug/resources/daemon.exe
+- del /S /Q *.dll
+- del /S /Q *.pak
+- del /S /Q *.pdb
+- del /S /Q *.xml
+- del /S /Q *.bin
+- del /S /Q *.dat
+- del /S /Q CefSharp.BrowserSubprocess.exe
+- del /S /Q daemon.exe
+- attrib -r Debug/resources/*
+- attrib -r Debug/asset/*
+- attrib -r Debug/resources/locales/*
+- attrib -r Debug/resources/swiftshader/*
+- attrib -r Debug/daemon.exe
+- cd C:\projects\minerstat-windows\minerstat-updater\bin\Debug
+- copy minerstat.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
+- copy minerstat.exe.config C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
+- cd C:\projects\minerstat-windows\minerstat\bin\x86\Debug\
+- mkdir mist
+- cd C:\projects\minerstat-windows\mist
+- copy minerfix.reg C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
+- copy OhGodAnETHlargementPill-r2.exe C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
+- copy OhGodAnETHlargementPill-r2-args.txt C:\projects\minerstat-windows\minerstat\bin\x86\Debug\mist
+
+artifacts:
+- path: minerstat/bin/x86/Debug
+  name: minerstat-portable
+
+deploy:
+- provider: GitHub
+  tag: latest
+  release: continuous build - up to date with commits
+  auth_token:
+    secure: 8+BupHQlNXPEwEnEiWuiYCZhaqrRmxys2RnfVbMjttXFMeMIFkzKJPRbDMJlE+Jy
+  repository: minerstat/minerstat-windows
+  prerelease: true
+  force_update: true
+
+# Don't actually build.
+build: off

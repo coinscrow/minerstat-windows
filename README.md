@@ -1,25 +1,19 @@
-# minerstat.com Windows Node
-![Downloads](https://img.shields.io/github/downloads/coinscrow/minerstat-windows/total.svg)
-![Version](https://img.shields.io/github/release/coinscrow/minerstat-windows.svg)
+![minerstat logo](https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/logo_full.svg)
 
-[DOWNLOAD - Latest release](https://github.com/coinscrow/minerstat-windows/releases/latest)
+# minerstat for Windows
 
-# Functions
-- Reboot / Restart / Switch Miner
+**minerstat for Windows** is mining monitoring and management software for your **AMD** / **NVIDIA** rigs.
 
-- Online Config Editor
+This software **only works with [my.minerstat.com](https://my.minerstat.com) interface**, it's **not in sync** with our old system
 
-- Mobile App Management
+**IMPORTANT NOTE** - Visual C++ 2013/2015 x86 is required 
 
-- Auto Fix (Restart miner on crash, Reboot if not resolved)
+http://static.minerstat.farm/miners/windows/vc_redist_2013.x86.exe
+http://static.minerstat.farm/miners/windows/vc_redist_2015.x86.exe
 
-- Start with Windows
+**IMPORTANT NOTE** - .NET Framework 4.5.2 is required.  
+http://static.minerstat.farm/miners/windows/NDP452-KB2901954-Web.exe
 
-- Watchdog (Restart miners, if closed or crashed)
-
-- WattTool Settings
-
-- Full online management from minerstat.com
-
-
-more info on https://minerstat.com
+| Installer | Portable |
+|--|--|
+| <a href='https://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-installer.zip'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> | <a href='https://github.com/minerstat/minerstat-windows/releases/download/latest/minerstat-portable.zip'><img alt="Download" src="https://cdn.rawgit.com/minerstat/minerstat-asic/master/docs/button_download.svg" width="95%"></a> |
