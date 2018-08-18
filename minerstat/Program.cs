@@ -1,8 +1,6 @@
 ﻿using CefSharp;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,12 +96,12 @@ namespace minerstat {
                 // Disables Windows Error messages like: Ethdcrminer64 stopped working ..
                 // minerstat Watchdog will be able to restart the process without a notice
                 // NOTICE: if not works, Click on /misc/minerfix.reg
-                try
-                {
-                    var rk = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\Windows Error Reporting");
-                    rk.CreateSubKey("DontShowUI", RegistryKeyPermissionCheck.Default);
-                    rk.SetValue("DontShowUI", 1);
-                } catch (Exception) { }
+                // try
+                // {
+                //     var rk = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\Windows Error Reporting");
+                //     rk.CreateSubKey("DontShowUI", RegistryKeyPermissionCheck.Default);
+                //     rk.SetValue("DontShowUI", 1);
+                // } catch (Exception) { }
 
                 // SET Global Varibles
                 //currentDir = System.Environment.CurrentDirectory;
@@ -136,7 +134,7 @@ namespace minerstat {
 
                 // Offline Events
                 prevConnectionError = null;
-                offlineLoop = new System.Timers.Timer(TimeSpan.FromSeconds(10).TotalMilliseconds); // set the time (10 sec in this case)
+                offlineLoop = new System.Timers.Timer(TimeSpan.FromSeconds(25).TotalMilliseconds); // set the time (10 sec in this case)
                 offlineLoop.AutoReset = true;
                 offlineLoop.Elapsed += new System.Timers.ElapsedEventHandler(offline.protect);
                 offlineLoop.Start();
